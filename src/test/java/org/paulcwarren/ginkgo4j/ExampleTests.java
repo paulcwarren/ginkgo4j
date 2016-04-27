@@ -8,7 +8,7 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 
 @Ignore
 @RunWith(Ginkgo4jRunner.class)
-public class ExampleTest {
+public class ExampleTests {
 	
 	private Example example;
 

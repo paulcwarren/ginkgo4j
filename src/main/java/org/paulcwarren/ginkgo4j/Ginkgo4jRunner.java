@@ -48,6 +48,10 @@ public class Ginkgo4jRunner extends Runner {
 
 	@Override
 	public void run(RunNotifier notifier) {
+		// maven's surefire plugin doesn't call getDescription so call it here
+		// to ensure setup happens
+		this.getDescription();
+		
 		SpecsCollector specCollector = new SpecsCollector();
 		new TestWalker(testClass).walk(specCollector);
 		
@@ -56,7 +60,7 @@ public class Ginkgo4jRunner extends Runner {
 		List<RunnerThread> workers = new ArrayList<>();
 		for(ExecutableChain chain : chains) {
 			Description desc = descriptions.get(chain.getId());
-			if (desc == null) throw new IllegalStateException(String.format("Unable to find description for %s", chain.getId()));
+			if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", chain.getId()));
 			workers.add(new RunnerThread(chain, notifier, desc));
 		}
 
