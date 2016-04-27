@@ -14,7 +14,7 @@ public class Spec extends Statement {
 	private ExecutableBlock block;
 	
 	public Spec(String description, ExecutableBlock block, Context origin, Context parent) {
-		this.id = parent.getId() + "." + description;
+		this.id = (parent != null) ? parent.getId() + "." + description : description;
 		this.description = description;
 		this.block = block;
 		this.origin = origin;

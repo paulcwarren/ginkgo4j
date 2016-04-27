@@ -6,13 +6,12 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.AfterEach;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 
 import org.junit.runner.RunWith;
-import org.paulcwarren.ginkgo4j.ExecutableBlock;
 import org.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import org.paulcwarren.ginkgo4j.Ginkgo4jDSL;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;

@@ -1,10 +1,12 @@
 package org.paulcwarren.ginkgo4j;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 
+@Ignore
 @RunWith(Ginkgo4jRunner.class)
 public class ExampleTest {
 	

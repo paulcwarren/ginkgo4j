@@ -1,16 +1,16 @@
 package org.paulcwarren.ginkgo4j;
 
-import impl.org.paulcwarren.ginkgo4j.builder.SpecVisitor; 
+import impl.org.paulcwarren.ginkgo4j.builder.TestVisitor; 
 
 public class Ginkgo4jDSL {
 
-	private static SpecVisitor visitor = null;
+	private static TestVisitor visitor = null;
 	
-	public static synchronized void setVisitor(SpecVisitor b) {
+	public static synchronized void setVisitor(TestVisitor b) {
 		visitor = b;
 	}
 
-	public static synchronized void unsetVisitor(SpecVisitor b) {
+	public static synchronized void unsetVisitor(TestVisitor b) {
 		if (b != visitor) {
 			throw new IllegalStateException("Mismatched set/unset builder calls");
 		}

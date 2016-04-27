@@ -3,7 +3,7 @@ package impl.org.paulcwarren.ginkgo4j.builder;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
 import org.paulcwarren.ginkgo4j.ExecutableChain;
 
-public class ExecutableChainBuilder implements SpecVisitor {
+public class ExecutableChainBuilder implements TestVisitor {
 
 	private String filter;
 	private ExecutableChain chain;

@@ -11,8 +11,6 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 
-import java.util.Map;
-
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
@@ -21,7 +19,6 @@ import org.paulcwarren.ginkgo4j.ExecutableBlock;
 import org.paulcwarren.ginkgo4j.ExecutableChain;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-@SuppressWarnings("unchecked")
 @RunWith(Ginkgo4jRunner.class)
 public class RunnerThreadTests {
 
@@ -31,7 +28,7 @@ public class RunnerThreadTests {
 
 	// mocks
 	private RunNotifier notifier;
-	private Map<String, Description> descriptions;
+	private Description description;
 	
 	private ExecutableBlock before;
 	private ExecutableBlock justBefore;
@@ -42,13 +39,13 @@ public class RunnerThreadTests {
 		Describe("RunnerThread", () -> {
 			
 			BeforeEach(() -> {
-				descriptions = (Map<String,Description>)mock(Map.class);
+				description = mock(Description.class);
 				chain = new ExecutableChain("some id");
 				notifier = mock(RunNotifier.class);
 			});
 
 			JustBeforeEach(() -> {
-				runner = new RunnerThread(chain, notifier, descriptions);
+				runner = new RunnerThread(chain, notifier, description);
 				runner.run();
 			});
 			

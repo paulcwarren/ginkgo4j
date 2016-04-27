@@ -1,6 +1,5 @@
 package org.paulcwarren.ginkgo4j;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,10 +16,11 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
-import impl.org.paulcwarren.ginkgo4j.Context;
 import impl.org.paulcwarren.ginkgo4j.Spec;
+import impl.org.paulcwarren.ginkgo4j.builder.DescriptionsCollector;
 import impl.org.paulcwarren.ginkgo4j.builder.ExecutableChainBuilder;
-import impl.org.paulcwarren.ginkgo4j.builder.SpecBuilder;
+import impl.org.paulcwarren.ginkgo4j.builder.SpecsCollector;
+import impl.org.paulcwarren.ginkgo4j.builder.TestWalker;
 import impl.org.paulcwarren.ginkgo4j.runner.RunnerThread;
 
 public class Ginkgo4jRunner extends Runner {
@@ -28,7 +28,6 @@ public class Ginkgo4jRunner extends Runner {
 	private Class<?> testClass;
 	private Map<String, Description> descriptions = new HashMap<>();
 	private Description description;
-	private List<ExecutableChain> chains;
 	
 	public Ginkgo4jRunner(Class<?> testClass) throws InitializationError {
 		this.testClass = testClass;
@@ -37,73 +36,28 @@ public class Ginkgo4jRunner extends Runner {
 	@Override
 	public Description getDescription() {
 		if (description == null) {
-			SpecBuilder specCollector = new SpecBuilder();
-			collectSpecs(specCollector);
-			
 			description = Description.createSuiteDescription(getName(), (Annotation[])null);
-			List<Context> contexts = specCollector.getContexts();
-			for (Context context : contexts) {
-				Serializable id = context.getId();
-				Description desc = Description.createSuiteDescription(context.getDescription(), id, (Annotation[])null);
-				descriptions.put(context.getId(), desc);
-				description.addChild(desc);
-				describeContext(context, desc);
-			}
-			
-			chains = calculateExecutionChains(specCollector.getSpecs());
+
+			DescriptionsCollector descCollector = new DescriptionsCollector(description);
+			new TestWalker(testClass).walk(descCollector);
+			descriptions = descCollector.getDescriptions();
 		}
 	
         return description;
 	}
 
-	private void collectSpecs(SpecBuilder specCollector) {
-		try {
-
-			Ginkgo4jDSL.setVisitor(specCollector);
-			try {
-				testClass.newInstance();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} finally {
-			Ginkgo4jDSL.unsetVisitor(specCollector);
-		}
-	}
-
-	private List<ExecutableChain> calculateExecutionChains(List<Spec> specs) {
-		List<ExecutableChain> chains = new ArrayList<>();
-    	for (Spec spec : specs) {
-
-    		ExecutableChainBuilder bldr = new ExecutableChainBuilder(spec.getId());
-    		Ginkgo4jDSL.setVisitor(bldr);
-    		try {
-    			testClass.newInstance();
-    		} catch (Throwable t) {}
-    		finally {
-    			Ginkgo4jDSL.setVisitor(null);
-    		}
-    		
-    		chains.add(bldr.getExecutableChain());
-    	}
-    	return chains;
-	}
-
 	@Override
 	public void run(RunNotifier notifier) {
-        notifier.fireTestStarted(description);
-        runDescribes(notifier);
-        notifier.fireTestFinished(description);
-   	}
-	
-    private void runDescribes(RunNotifier notifier) {
-    		
+		SpecsCollector specCollector = new SpecsCollector();
+		new TestWalker(testClass).walk(specCollector);
+		
+		List<ExecutableChain> chains = calculateExecutionChains(specCollector.getSpecs());
+
 		List<RunnerThread> workers = new ArrayList<>();
 		for(ExecutableChain chain : chains) {
-			workers.add(new RunnerThread(chain, notifier, Collections.unmodifiableMap(descriptions)));
+			Description desc = descriptions.get(chain.getId());
+			if (desc == null) throw new IllegalStateException(String.format("Unable to find description for %s", chain.getId()));
+			workers.add(new RunnerThread(chain, notifier, desc));
 		}
 
 		notifier.fireTestStarted(description);
@@ -111,22 +65,32 @@ public class Ginkgo4jRunner extends Runner {
             ExecutorService executor = Executors.newFixedThreadPool(getThreads());
             for (RunnerThread runner : workers) {
                 executor.execute(runner);
-              }
+            }
             executor.shutdown();
             while (!executor.isTerminated()) {
             	Thread.sleep(100);
             }
 
         } catch (AssumptionViolatedException e) {
-        	notifier.fireTestAssumptionFailed(new Failure(description, e));;
+        	notifier.fireTestAssumptionFailed(new Failure(description, e));
         } catch (Throwable e) {
         	notifier.fireTestFailure(new Failure(description, e));
         } finally {
         	notifier.fireTestFinished(description);
         }
-    }
+   	}
+	
+	protected List<ExecutableChain> calculateExecutionChains(List<Spec> specs) {
+		List<ExecutableChain> chains = new ArrayList<>();
+    	for (Spec spec : specs) {
+    		ExecutableChainBuilder bldr = new ExecutableChainBuilder(spec.getId());
+    		new TestWalker(testClass).walk(bldr);
+    		chains.add(bldr.getExecutableChain());
+    	}
+    	return chains;
+	}
 
-	private int getThreads() {
+	protected int getThreads() {
 		Ginkgo4jConfiguration config = testClass.getAnnotation(Ginkgo4jConfiguration.class);
 		if (config != null) {
 			return config.threads();
@@ -149,22 +113,4 @@ public class Ginkgo4jRunner extends Runner {
     protected Annotation[] getRunnerAnnotations() {
         return testClass.getAnnotations();
     }
-
-	protected Description describeContext(Context context, Description desc) {
-
-		for (Context childCtxt : context.getChildren()) {
-			Description childDesc = Description.createSuiteDescription(childCtxt.getDescription(), childCtxt.getId(), (Annotation[])null);
-			descriptions.put(childCtxt.getId(), childDesc);
-			desc.addChild(childDesc);
-			describeContext(childCtxt, childDesc);
-		}
-		
-		for (Spec spec : context.getSpecs()) {
-			Description childDesc = Description.createTestDescription((String)null, spec.getDescription(), spec.getId());
-			descriptions.put(spec.getId(), childDesc);
-			desc.addChild(childDesc);
-		}
-		
-		return desc;
-	}
 }

@@ -13,18 +13,17 @@ public class RunnerThread extends Thread {
 
 	private ExecutableChain chain;
 	private RunNotifier notifier;
-	private Map<String, Description> descriptions;
+	private Description desc;
 	
-	public RunnerThread(ExecutableChain chain, RunNotifier notifier, Map<String, Description> descriptions) {
+	public RunnerThread(ExecutableChain chain, RunNotifier notifier, Description desc) {
 		this.chain = chain;
 		this.notifier = notifier;
-		this.descriptions = descriptions;
+		this.desc = desc;
 	}
 	
 	@Override
 	public void run() {
 
-		Description desc = descriptions.get(chain.getId());
 		notifier.fireTestStarted(desc);
 
 		try {
