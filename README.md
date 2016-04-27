@@ -1,13 +1,14 @@
 # Ginkgo4j
 ##A Java BDD Testing Framework  (based on [ginkgo](http://onsi.github.io/ginkgo/))
 
-Just getting up and running.  
+[![Build Status](https://travis-ci.org/paulcwarren/ginkgo4j.svg?branch=master)](https://travis-ci.org/paulcwarren/ginkgo4j)
 
 Currently supports:-
 - Describe, Context, BeforeEach, JustBeforeEach, It and AfterEach constructs
 - Any level of nested contexts
 - Threaded execution (default is 4 threads)
 - Integrated into junit (so works in IDEs)
+- Integrated into maven 
 
 ## Getting Started
 
