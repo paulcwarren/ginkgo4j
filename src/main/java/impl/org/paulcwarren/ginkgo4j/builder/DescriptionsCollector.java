@@ -56,7 +56,7 @@ public class DescriptionsCollector implements TestVisitor {
 	public void justBeforeEach(ExecutableBlock block) {
 	}
 
-	public void it(String text, ExecutableBlock block) {
+	public void it(String text, ExecutableBlock block, boolean isFocused) {
 		String id = this.getId(text);
 		Description itDesc = Description.createTestDescription("It", text, id);
 		descriptions.put(id, itDesc);

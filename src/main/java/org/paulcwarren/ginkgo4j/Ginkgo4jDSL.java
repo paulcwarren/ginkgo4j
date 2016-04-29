@@ -18,45 +18,57 @@ public class Ginkgo4jDSL {
 	}
 
 	public static void Describe(String text, ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("describe");
+		assertVisitor("Describe");
 		if (visitor != null) {
 			visitor.describe(text, block);
 		}
  	}
 
 	public static void Context(String text, ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("describe");
+		assertVisitor("Context");
 		if (visitor != null) {
 			visitor.context(text, block);
 		}
 	}
 
 	public static void BeforeEach(ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("describe");
+		assertVisitor("BeforeEach");
 		if (visitor != null) {
 			visitor.beforeEach(block);
 		}
 	}
 
 	public static void JustBeforeEach(ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("describe");
+		assertVisitor("JustBeforeEach");
 		if (visitor != null) {
 			visitor.justBeforeEach(block);
 		}
 	}
 
 	public static void It(String text, ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("it");
+		assertVisitor("It");
 		if (visitor != null) {
-			visitor.it(text, block);
+			visitor.it(text, block, false);
+		}
+	}
+
+	public static void FIt(String text, ExecutableBlock block) {
+		assertVisitor("FIt");
+		if (visitor != null) {
+			visitor.it(text, block, true);
 		}
 	}
 
 	public static void AfterEach(ExecutableBlock block) {
-//		failIfNoSuiteBuilderAvailable("describe");
-		//afterEachs.put(text, block);
+		assertVisitor("AfterEach");
 		if (visitor != null) {
 			visitor.afterEach(block);
+		}
+	}
+
+	private static void assertVisitor(String string) {
+		if (visitor == null) {
+			throw new IllegalStateException(string);
 		}
 	}
 }

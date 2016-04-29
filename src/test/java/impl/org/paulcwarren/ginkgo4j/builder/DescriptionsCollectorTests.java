@@ -1,14 +1,19 @@
 package impl.org.paulcwarren.ginkgo4j.builder;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.AfterEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
 @RunWith(Ginkgo4jRunner.class)

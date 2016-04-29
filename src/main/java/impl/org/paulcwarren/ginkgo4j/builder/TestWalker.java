@@ -6,12 +6,10 @@ import org.paulcwarren.ginkgo4j.Ginkgo4jDSL;
 public class TestWalker implements TestVisitor {
 	
 	private Class<?> testClass;
-//	private TestVisitor testClassVisitor;
 	private TestVisitor[] visitors;
 	
 	public TestWalker(Class<?> testClass, TestVisitor visitor) {
 		this.testClass = testClass;
-//		this.testClassVisitor = visitor;
 	}
 	
 	public TestWalker(Class<?> testClass) {
@@ -55,7 +53,6 @@ public class TestWalker implements TestVisitor {
 
 	@Override
 	public void describe(String text, ExecutableBlock block) {
-//		testClassVisitor.context(text, block);
 		for (TestVisitor visitor : visitors) {
 			visitor.describe(text, block);
 		}
@@ -63,7 +60,6 @@ public class TestWalker implements TestVisitor {
 
 	@Override
 	public void context(String text, ExecutableBlock block) {
-//		testClassVisitor.context(text, block);
 		for (TestVisitor visitor : visitors) {
 			visitor.context(text, block);
 		}
@@ -71,7 +67,6 @@ public class TestWalker implements TestVisitor {
 
 	@Override
 	public void beforeEach(ExecutableBlock block) {
-//		testClassVisitor.beforeEach(block);
 		for (TestVisitor visitor : visitors) {
 			visitor.beforeEach(block);
 		}
@@ -79,23 +74,20 @@ public class TestWalker implements TestVisitor {
 
 	@Override
 	public void justBeforeEach(ExecutableBlock block) {
-//		testClassVisitor.justBeforeEach(block);
 		for (TestVisitor visitor : visitors) {
 			visitor.justBeforeEach(block);
 		}
 	}
 
 	@Override
-	public void it(String text, ExecutableBlock block) {
-//		testClassVisitor.it(text, block);
+	public void it(String text, ExecutableBlock block, boolean isFocused) {
 		for (TestVisitor visitor : visitors) {
-			visitor.it(text, block);
+			visitor.it(text, block, isFocused);
 		}
 	}
 
 	@Override
 	public void afterEach(ExecutableBlock block) {
-//		testClassVisitor.afterEach(block);
 		for (TestVisitor visitor : visitors) {
 			visitor.afterEach(block);
 		}

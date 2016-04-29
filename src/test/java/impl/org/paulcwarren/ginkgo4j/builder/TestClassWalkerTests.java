@@ -1,16 +1,23 @@
 package impl.org.paulcwarren.ginkgo4j.builder;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.AfterEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-@SuppressWarnings("unused")
 @RunWith(Ginkgo4jRunner.class)
 public class TestClassWalkerTests  {
 
@@ -34,7 +41,7 @@ public class TestClassWalkerTests  {
 					order.verify(visitorSpy).justBeforeEach(anyObject());
 					order.verify(visitorSpy).context(anyString(), anyObject());
 					order.verify(visitorSpy).beforeEach(anyObject());
-					order.verify(visitorSpy).it(anyString(), anyObject());
+					order.verify(visitorSpy).it(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).afterEach(anyObject());
 					verifyNoMoreInteractions(visitorSpy);
 				});
@@ -49,7 +56,7 @@ public class TestClassWalkerTests  {
 			Context("A context", () -> {
 				BeforeEach(() -> {
 				});
-				It("should do somehting", () -> {
+				It("should do something", () -> {
 				});
 			});
 			AfterEach(() -> {
@@ -77,7 +84,7 @@ public class TestClassWalkerTests  {
 		public void justBeforeEach(ExecutableBlock block) {
 		}
 		@Override
-		public void it(String text, ExecutableBlock block) {
+		public void it(String text, ExecutableBlock block, boolean isFocused) {
 		}
 		@Override
 		public void afterEach(ExecutableBlock block) {

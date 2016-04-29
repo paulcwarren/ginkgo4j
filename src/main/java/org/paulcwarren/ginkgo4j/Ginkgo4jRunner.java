@@ -2,7 +2,6 @@ package org.paulcwarren.ginkgo4j;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class Ginkgo4jRunner extends Runner {
 
 	@Override
 	public void run(RunNotifier notifier) {
-		// maven's surefire plugin doesn't call getDescription so call it here
+		// maven's surefire plug-in doesn't call getDescription so call it here
 		// to ensure setup happens
 		this.getDescription();
 		
@@ -86,12 +85,21 @@ public class Ginkgo4jRunner extends Runner {
 	
 	protected List<ExecutableChain> calculateExecutionChains(List<Spec> specs) {
 		List<ExecutableChain> chains = new ArrayList<>();
+		List<ExecutableChain> focussedChains = new ArrayList<>();
     	for (Spec spec : specs) {
     		ExecutableChainBuilder bldr = new ExecutableChainBuilder(spec.getId());
     		new TestWalker(testClass).walk(bldr);
-    		chains.add(bldr.getExecutableChain());
+    		if (spec.isFocused()) {
+    			focussedChains.add(bldr.getExecutableChain());
+    		} else {
+        		chains.add(bldr.getExecutableChain());
+    		}
     	}
-    	return chains;
+    	if (focussedChains.size() > 0) {
+    		return focussedChains;
+    	} else {
+        	return chains;
+    	}
 	}
 
 	protected int getThreads() {

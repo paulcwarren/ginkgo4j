@@ -58,7 +58,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 	}
 
 	@Override
-	public void it(String text, ExecutableBlock block) {
+	public void it(String text, ExecutableBlock block, boolean isFocused) {
 		if (filter.startsWith(text)) {
 			filter = filter.replaceFirst(text, "");
 			if (filter.startsWith(".")) {

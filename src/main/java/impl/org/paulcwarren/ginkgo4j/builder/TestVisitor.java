@@ -8,7 +8,7 @@ public interface TestVisitor {
 	void context(String text, ExecutableBlock block);
 	void beforeEach(ExecutableBlock block);
 	void justBeforeEach(ExecutableBlock block);
-	void it(String text, ExecutableBlock block);
+	void it(String text, ExecutableBlock block, boolean isFocussed);
 	void afterEach(ExecutableBlock block);
 	
 }

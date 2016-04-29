@@ -45,8 +45,8 @@ public class SpecsCollector implements TestVisitor {
 	public void justBeforeEach(ExecutableBlock block) {
 	}
 
-	public void it(String text, ExecutableBlock block) {
-		Spec spec = new Spec(getId(text), block, null, null);
+	public void it(String text, ExecutableBlock block, boolean isFocused) {
+		Spec spec = new Spec(getId(text), block, isFocused);
 		specs.add(spec);
 	}
 	

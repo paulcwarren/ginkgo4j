@@ -7,18 +7,16 @@ public class Spec extends Statement {
 
 	private String id;
 	
-	private Context origin;
-	private Context parent;
+	private boolean isFocused;
 	
 	private String description;
 	private ExecutableBlock block;
 	
-	public Spec(String description, ExecutableBlock block, Context origin, Context parent) {
-		this.id = (parent != null) ? parent.getId() + "." + description : description;
+	public Spec(String description, ExecutableBlock block, boolean isFocused) {
+		this.id = description;
 		this.description = description;
 		this.block = block;
-		this.origin = origin;
-		this.parent = parent;
+		this.isFocused = isFocused;
 	}
 	
 	public String getId() {
@@ -29,16 +27,12 @@ public class Spec extends Statement {
 		return description;
 	}
 
+	public boolean isFocused() {
+		return isFocused;
+	}
+	
 	public ExecutableBlock getExecutableBlock() {
 		return block;
-	}
-
-	public Context getOrigin() {
-		return origin;
-	}
-
-	public Context getParent() {
-		return parent;
 	}
 
 	@Override
