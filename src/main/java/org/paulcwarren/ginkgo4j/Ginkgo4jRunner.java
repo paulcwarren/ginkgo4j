@@ -20,7 +20,8 @@ import impl.org.paulcwarren.ginkgo4j.builder.DescriptionsCollector;
 import impl.org.paulcwarren.ginkgo4j.builder.ExecutableChainBuilder;
 import impl.org.paulcwarren.ginkgo4j.builder.SpecsCollector;
 import impl.org.paulcwarren.ginkgo4j.builder.TestWalker;
-import impl.org.paulcwarren.ginkgo4j.runner.RunnerThread;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecRunnerThread;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipperThread;
 
 public class Ginkgo4jRunner extends Runner {
 
@@ -47,26 +48,18 @@ public class Ginkgo4jRunner extends Runner {
 
 	@Override
 	public void run(RunNotifier notifier) {
-		// maven's surefire plug-in doesn't call getDescription so call it here
+		// maven's sure-fire plug-in doesn't call getDescription so call it here
 		// to ensure setup happens
 		this.getDescription();
 		
-		SpecsCollector specCollector = new SpecsCollector();
-		new TestWalker(testClass).walk(specCollector);
-		
-		List<ExecutableChain> chains = calculateExecutionChains(specCollector.getSpecs());
+		List<ExecutableChain> chains = calculateExecutionChains();
 
-		List<RunnerThread> workers = new ArrayList<>();
-		for(ExecutableChain chain : chains) {
-			Description desc = descriptions.get(chain.getId());
-			if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", chain.getId()));
-			workers.add(new RunnerThread(chain, notifier, desc));
-		}
+		List<Thread> workers = calculateWorkerThreads(notifier, chains);
 
 		notifier.fireTestStarted(description);
         try {
             ExecutorService executor = Executors.newFixedThreadPool(getThreads());
-            for (RunnerThread runner : workers) {
+            for (Thread runner : workers) {
                 executor.execute(runner);
             }
             executor.shutdown();
@@ -82,26 +75,48 @@ public class Ginkgo4jRunner extends Runner {
         	notifier.fireTestFinished(description);
         }
    	}
-	
-	protected List<ExecutableChain> calculateExecutionChains(List<Spec> specs) {
+
+	List<ExecutableChain> calculateExecutionChains() {
+		SpecsCollector specCollector = new SpecsCollector();
+		new TestWalker(testClass).walk(specCollector);
+
 		List<ExecutableChain> chains = new ArrayList<>();
-		List<ExecutableChain> focussedChains = new ArrayList<>();
-    	for (Spec spec : specs) {
+    	for (Spec spec : specCollector.getSpecs()) {
     		ExecutableChainBuilder bldr = new ExecutableChainBuilder(spec.getId());
     		new TestWalker(testClass).walk(bldr);
-    		if (spec.isFocused()) {
-    			focussedChains.add(bldr.getExecutableChain());
-    		} else {
-        		chains.add(bldr.getExecutableChain());
-    		}
+    		chains.add(bldr.getExecutableChain());
     	}
-    	if (focussedChains.size() > 0) {
-    		return focussedChains;
-    	} else {
-        	return chains;
-    	}
+    	return chains;
 	}
 
+	List<Thread> calculateWorkerThreads(RunNotifier notifier, List<ExecutableChain> chains) {
+		
+		List<Thread> skippedWorkers = new ArrayList<>();
+		List<Thread> focusedWorkers = new ArrayList<>();
+		List<Thread> workers = new ArrayList<>();
+
+		for(ExecutableChain chain : chains) {
+			Description desc = descriptions.get(chain.getId());
+			if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", chain.getId()));
+			
+			if (chain.isFocused()) {
+				focusedWorkers.add(new SpecRunnerThread(chain, notifier, desc));
+			} else {
+				workers.add(new SpecRunnerThread(chain, notifier, desc));
+				skippedWorkers.add(new SpecSkipperThread(notifier, desc));
+			}
+		}
+		
+		if (focusedWorkers.size() > 0) {
+			workers = new ArrayList<>();
+			workers.addAll(focusedWorkers);
+			workers.addAll(skippedWorkers);
+			return workers;
+		} else {
+			return workers;
+		}
+	}
+	
 	protected int getThreads() {
 		Ginkgo4jConfiguration config = testClass.getAnnotation(Ginkgo4jConfiguration.class);
 		if (config != null) {

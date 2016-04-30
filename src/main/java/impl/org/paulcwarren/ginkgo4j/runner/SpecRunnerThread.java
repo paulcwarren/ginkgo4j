@@ -1,7 +1,5 @@
 package impl.org.paulcwarren.ginkgo4j.runner;
 
-import java.util.Map;
-
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -9,13 +7,13 @@ import org.junit.runner.notification.RunNotifier;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
 import org.paulcwarren.ginkgo4j.ExecutableChain;
 
-public class RunnerThread extends Thread {
+public class SpecRunnerThread extends Thread {
 
 	private ExecutableChain chain;
 	private RunNotifier notifier;
 	private Description desc;
 	
-	public RunnerThread(ExecutableChain chain, RunNotifier notifier, Description desc) {
+	public SpecRunnerThread(ExecutableChain chain, RunNotifier notifier, Description desc) {
 		this.chain = chain;
 		this.notifier = notifier;
 		this.desc = desc;

@@ -20,10 +20,10 @@ import org.paulcwarren.ginkgo4j.ExecutableChain;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
 @RunWith(Ginkgo4jRunner.class)
-public class RunnerThreadTests {
+public class SpecRunnerThreadTests {
 
 	// test classes
-	private RunnerThread runner;
+	private SpecRunnerThread runner;
 	private ExecutableChain chain;
 
 	// mocks
@@ -45,7 +45,7 @@ public class RunnerThreadTests {
 			});
 
 			JustBeforeEach(() -> {
-				runner = new RunnerThread(chain, notifier, description);
+				runner = new SpecRunnerThread(chain, notifier, description);
 				runner.run();
 			});
 			

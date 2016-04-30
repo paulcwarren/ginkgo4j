@@ -66,7 +66,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 			}
 			try {
 				chain.setSpec(block);
-				//block.invoke();
+				chain.setIsFocused(isFocused);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

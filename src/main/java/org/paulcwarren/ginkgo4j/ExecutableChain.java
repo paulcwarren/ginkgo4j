@@ -6,6 +6,7 @@ import java.util.List;
 public class ExecutableChain {
 	
 	private String id;
+	private boolean isFocused;
 	
 	public ExecutableChain(String id) {
 		this.id = id;
@@ -40,4 +41,11 @@ public class ExecutableChain {
 		return afterEachs;
 	}
 	
+	public boolean isFocused() {
+		return isFocused;
+	}
+	
+	public void setIsFocused(boolean isFocused) {
+		this.isFocused = isFocused;
+	}
 }

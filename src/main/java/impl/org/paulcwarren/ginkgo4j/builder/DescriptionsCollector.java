@@ -1,6 +1,7 @@
 package impl.org.paulcwarren.ginkgo4j.builder;
 
 import java.lang.annotation.Annotation;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -60,7 +61,9 @@ public class DescriptionsCollector implements TestVisitor {
 		String id = this.getId(text);
 		Description itDesc = Description.createTestDescription("It", text, id);
 		descriptions.put(id, itDesc);
-		context.peek().addChild(itDesc);
+		try {
+			context.peek().addChild(itDesc);
+		} catch (EmptyStackException ese) {}
 	}
 	
 	public void afterEach(ExecutableBlock block) {
