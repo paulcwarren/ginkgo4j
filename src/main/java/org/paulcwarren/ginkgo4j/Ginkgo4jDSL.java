@@ -20,7 +20,14 @@ public class Ginkgo4jDSL {
 	public static void Describe(String text, ExecutableBlock block) {
 		assertVisitor("Describe");
 		if (visitor != null) {
-			visitor.describe(text, block);
+			visitor.describe(text, block, false);
+		}
+ 	}
+
+	public static void FDescribe(String text, ExecutableBlock block) {
+		assertVisitor("FDescribe");
+		if (visitor != null) {
+			visitor.describe(text, block, true);
 		}
  	}
 

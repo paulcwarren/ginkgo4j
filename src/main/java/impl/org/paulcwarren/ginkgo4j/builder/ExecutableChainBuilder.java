@@ -18,12 +18,10 @@ public class ExecutableChainBuilder implements TestVisitor {
 	}
 
 	@Override
-	public void describe(String text, ExecutableBlock block) {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) {
 		if (filter.startsWith(text)) {
-			filter = filter.replaceFirst(text, "");
-			if (filter.startsWith(".")) {
-				filter = filter.substring(1, filter.length());
-			}
+			filter = splitFilter(filter, text);
+			chain.setIsFocused(isFocused);
 			try {
 				block.invoke();
 			} catch (Exception e) {
@@ -35,11 +33,8 @@ public class ExecutableChainBuilder implements TestVisitor {
 	@Override
 	public void context(String text, ExecutableBlock block, boolean isFocused) {
 		if (filter.startsWith(text)) {
-			filter = filter.replaceFirst(text, "");
-			if (filter.startsWith(".")) {
-				filter = filter.substring(1, filter.length());
-			}
-			chain.setIsFocused(isFocused);
+			filter = splitFilter(filter, text);
+			chain.setIsFocused(isFocused |= chain.isFocused());
 			try {
 				block.invoke();
 			} catch (Exception e) {
@@ -61,10 +56,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 	@Override
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
 		if (filter.startsWith(text)) {
-			filter = filter.replaceFirst(text, "");
-			if (filter.startsWith(".")) {
-				filter = filter.substring(1, filter.length());
-			}
+			filter = splitFilter(filter, text);
 			try {
 				chain.setSpec(block);
 				chain.setIsFocused(isFocused |= chain.isFocused());
@@ -77,6 +69,14 @@ public class ExecutableChainBuilder implements TestVisitor {
 	@Override
 	public void afterEach(ExecutableBlock block) {
 		chain.getAfterEachs().add(0, block);
+	}
+
+	private String splitFilter(String filter, String text) {
+		String newFilter = filter.replaceFirst(text, "");
+		if (newFilter.startsWith(".")) {
+			newFilter = newFilter.substring(1, newFilter.length());
+		}
+		return newFilter;
 	}
 
 }

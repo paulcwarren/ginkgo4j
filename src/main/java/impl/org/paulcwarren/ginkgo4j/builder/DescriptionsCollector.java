@@ -23,7 +23,7 @@ public class DescriptionsCollector implements TestVisitor {
 		return descriptions;
 	}
 	
-	public void describe(String text, ExecutableBlock block) {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) {
 		String id = this.getId(text);
 		Description desc = Description.createSuiteDescription(text, id, (Annotation[])null);
 		description.addChild(desc);

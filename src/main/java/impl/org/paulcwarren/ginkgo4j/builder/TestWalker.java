@@ -52,9 +52,9 @@ public class TestWalker implements TestVisitor {
 	}
 
 	@Override
-	public void describe(String text, ExecutableBlock block) {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) {
 		for (TestVisitor visitor : visitors) {
-			visitor.describe(text, block);
+			visitor.describe(text, block, isFocused);
 		}
 	}
 

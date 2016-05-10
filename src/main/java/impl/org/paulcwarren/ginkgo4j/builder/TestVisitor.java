@@ -4,7 +4,7 @@ import org.paulcwarren.ginkgo4j.ExecutableBlock;
 
 public interface TestVisitor {
 	
-	void describe(String text, ExecutableBlock block);
+	void describe(String text, ExecutableBlock block, boolean isFocused);
 	void context(String text, ExecutableBlock block, boolean isFocused);
 	void beforeEach(ExecutableBlock block);
 	void justBeforeEach(ExecutableBlock block);

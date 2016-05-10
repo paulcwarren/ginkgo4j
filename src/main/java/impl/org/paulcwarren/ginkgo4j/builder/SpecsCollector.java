@@ -17,7 +17,7 @@ public class SpecsCollector implements TestVisitor {
 		return specs;
 	}
 	
-	public void describe(String text, ExecutableBlock block) {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) {
 		context.push(text);
 		try {
 			block.invoke();

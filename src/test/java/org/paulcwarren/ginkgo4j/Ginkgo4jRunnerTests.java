@@ -11,6 +11,7 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.FContext;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.FDescribe;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.FIt;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 
@@ -75,7 +76,7 @@ public class Ginkgo4jRunnerTests {
 					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecRunnerThread.class))));
 				});
 			});
-			Context("when called with at least one focussed spec", () -> {
+			Context("when called with at least one focused spec", () -> {
 				BeforeEach(() -> {
 					runner = new Ginkgo4jRunner(FittedTestClass.class);
 					runner.getDescription();
@@ -89,7 +90,7 @@ public class Ginkgo4jRunnerTests {
 					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecSkipperThread.class)), is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecSkipperThread.class))));
 				});
 			});
-			Context("when called with at a focussed context", () -> {
+			Context("when called with at a focused context", () -> {
 				BeforeEach(() -> {
 					runner = new Ginkgo4jRunner(FittedContextClass.class);
 					runner.getDescription();
@@ -109,6 +110,28 @@ public class Ginkgo4jRunnerTests {
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(5));
 					assertThat(skipperThreads(workers), is(3));
+				});
+			});
+			Context("when called with at a focused describe", () -> {
+				BeforeEach(() -> {
+					runner = new Ginkgo4jRunner(FittedDescribeClass.class);
+					runner.getDescription();
+				});
+				It("should return a SpecRunnerThread for all tests in the fitted describe", () -> {
+					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+
+					assertThat(workers, is(not(nullValue())));
+					assertThat(workers.size(), is(7));
+					assertThat(runnerThreads(workers), is(2));
+				});
+				It("should return SpecSkipperThreads for everything else", () -> {
+					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+
+					assertThat(workers, is(not(nullValue())));
+					assertThat(workers.size(), is(7));
+					assertThat(skipperThreads(workers), is(5));
 				});
 			});
 		});
@@ -160,6 +183,20 @@ public class Ginkgo4jRunnerTests {
 		It("test2", () -> {});
 		It("test3", () -> {});
 		FContext("a context", () -> {
+			It("test4", () -> {});
+			It("test5", () -> {});
+		});
+	}}
+
+	public static class FittedDescribeClass {{
+		It("test1", () -> {});
+		It("test2", () -> {});
+		FDescribe("a describe", () -> {
+			It("test6", () -> {});
+			It("test7", () -> {});
+		});
+		It("test3", () -> {});
+		Context("a context", () -> {
 			It("test4", () -> {});
 			It("test5", () -> {});
 		});

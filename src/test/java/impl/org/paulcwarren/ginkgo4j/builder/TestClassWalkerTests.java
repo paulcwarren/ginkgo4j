@@ -37,7 +37,7 @@ public class TestClassWalkerTests  {
 				
 				It("should visit all nodes in the tree", () -> {
 					InOrder order = inOrder(visitorSpy);
-					order.verify(visitorSpy).describe(anyString(), anyObject());
+					order.verify(visitorSpy).describe(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).justBeforeEach(anyObject());
 					order.verify(visitorSpy).context(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).beforeEach(anyObject());
@@ -66,7 +66,7 @@ public class TestClassWalkerTests  {
 	
 	static class TestVisitorImpl implements TestVisitor {
 		@Override
-		public void describe(String text, ExecutableBlock block) {
+		public void describe(String text, ExecutableBlock block, boolean isFocused) {
 			try {
 				block.invoke();
 			} catch (Exception e) {}
