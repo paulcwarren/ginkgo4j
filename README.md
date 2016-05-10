@@ -5,6 +5,7 @@
 
 Currently supports:-
 - Describe, Context, BeforeEach, JustBeforeEach, It and AfterEach constructs
+- Focusing of tests through FDescribe, FContext and FIt constructs
 - Any level of nested contexts
 - Threaded execution (default is 4 threads)
 - Integrated into junit (so works in IDEs)
