@@ -39,7 +39,7 @@ public class TestClassWalkerTests  {
 					InOrder order = inOrder(visitorSpy);
 					order.verify(visitorSpy).describe(anyString(), anyObject());
 					order.verify(visitorSpy).justBeforeEach(anyObject());
-					order.verify(visitorSpy).context(anyString(), anyObject());
+					order.verify(visitorSpy).context(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).beforeEach(anyObject());
 					order.verify(visitorSpy).it(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).afterEach(anyObject());
@@ -72,7 +72,7 @@ public class TestClassWalkerTests  {
 			} catch (Exception e) {}
 		}
 		@Override
-		public void context(String text, ExecutableBlock block) {
+		public void context(String text, ExecutableBlock block, boolean isFocused) {
 			try {
 				block.invoke();
 			} catch (Exception e) {}

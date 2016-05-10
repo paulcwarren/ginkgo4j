@@ -27,7 +27,14 @@ public class Ginkgo4jDSL {
 	public static void Context(String text, ExecutableBlock block) {
 		assertVisitor("Context");
 		if (visitor != null) {
-			visitor.context(text, block);
+			visitor.context(text, block, false);
+		}
+	}
+
+	public static void FContext(String text, ExecutableBlock block) {
+		assertVisitor("FContext");
+		if (visitor != null) {
+			visitor.context(text, block, true);
 		}
 	}
 

@@ -33,12 +33,13 @@ public class ExecutableChainBuilder implements TestVisitor {
 	}
 
 	@Override
-	public void context(String text, ExecutableBlock block) {
+	public void context(String text, ExecutableBlock block, boolean isFocused) {
 		if (filter.startsWith(text)) {
 			filter = filter.replaceFirst(text, "");
 			if (filter.startsWith(".")) {
 				filter = filter.substring(1, filter.length());
 			}
+			chain.setIsFocused(isFocused);
 			try {
 				block.invoke();
 			} catch (Exception e) {
@@ -66,7 +67,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 			}
 			try {
 				chain.setSpec(block);
-				chain.setIsFocused(isFocused);
+				chain.setIsFocused(isFocused |= chain.isFocused());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

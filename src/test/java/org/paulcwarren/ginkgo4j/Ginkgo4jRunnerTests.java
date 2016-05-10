@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.FContext;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.FIt;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 
@@ -88,6 +89,28 @@ public class Ginkgo4jRunnerTests {
 					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecSkipperThread.class)), is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecSkipperThread.class))));
 				});
 			});
+			Context("when called with at a focussed context", () -> {
+				BeforeEach(() -> {
+					runner = new Ginkgo4jRunner(FittedContextClass.class);
+					runner.getDescription();
+				});
+				It("should return a SpecRunnerThread for all tests in the fitted context", () -> {
+					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+
+					assertThat(workers, is(not(nullValue())));
+					assertThat(workers.size(), is(5));
+					assertThat(runnerThreads(workers), is(2));
+				});
+				It("should return SpecSkipperThreads for everything else", () -> {
+					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+
+					assertThat(workers, is(not(nullValue())));
+					assertThat(workers.size(), is(5));
+					assertThat(skipperThreads(workers), is(3));
+				});
+			});
 		});
 	}
 	
@@ -100,6 +123,26 @@ public class Ginkgo4jRunnerTests {
 		throw new IllegalArgumentException();
 	}
 	
+	private Object runnerThreads(List<Thread> workers) {
+		int i=0;
+		for (Thread thread : workers) {
+			if (thread instanceof SpecRunnerThread) {
+				i++;
+			}
+		}
+		return i;
+	}
+
+	private Object skipperThreads(List<Thread> workers) {
+		int i=0;
+		for (Thread thread : workers) {
+			if (thread instanceof SpecSkipperThread) {
+				i++;
+			}
+		}
+		return i;
+	}
+
 	public static class TestClass {{
 		It("test1", () -> {});
 		It("test2", () -> {});
@@ -110,5 +153,15 @@ public class Ginkgo4jRunnerTests {
 		It("test1", () -> {});
 		FIt("test2", () -> {});
 		It("test3", () -> {});
+	}}
+
+	public static class FittedContextClass {{
+		It("test1", () -> {});
+		It("test2", () -> {});
+		It("test3", () -> {});
+		FContext("a context", () -> {
+			It("test4", () -> {});
+			It("test5", () -> {});
+		});
 	}}
 }

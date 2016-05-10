@@ -59,9 +59,9 @@ public class TestWalker implements TestVisitor {
 	}
 
 	@Override
-	public void context(String text, ExecutableBlock block) {
+	public void context(String text, ExecutableBlock block, boolean isFocused) {
 		for (TestVisitor visitor : visitors) {
-			visitor.context(text, block);
+			visitor.context(text, block, isFocused);
 		}
 	}
 

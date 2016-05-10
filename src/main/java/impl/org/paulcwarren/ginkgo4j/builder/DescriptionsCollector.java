@@ -37,11 +37,11 @@ public class DescriptionsCollector implements TestVisitor {
 		}
 	}
 	
-	public void context(String text, ExecutableBlock block) {
+	public void context(String text, ExecutableBlock block, boolean isFocused) {
 		String id = this.getId(text);
 		Description childDesc = Description.createSuiteDescription(text, id, (Annotation[])null);
 		descriptions.put(id, childDesc);
-		context.peek().addChild(childDesc);
+		safePeek(childDesc);
 		context.push(childDesc);
 		try {
 			block.invoke();
@@ -50,7 +50,7 @@ public class DescriptionsCollector implements TestVisitor {
 			context.pop();
 		}
 	}
-	
+
 	public void beforeEach(ExecutableBlock block) {
 	}
 
@@ -62,7 +62,7 @@ public class DescriptionsCollector implements TestVisitor {
 		Description itDesc = Description.createTestDescription("It", text, id);
 		descriptions.put(id, itDesc);
 		try {
-			context.peek().addChild(itDesc);
+			safePeek(itDesc);
 		} catch (EmptyStackException ese) {}
 	}
 	
@@ -85,5 +85,10 @@ public class DescriptionsCollector implements TestVisitor {
 		return builder.toString();
 	}
 
+	private void safePeek(Description childDesc) {
+		try {
+			context.peek().addChild(childDesc);
+		} catch (EmptyStackException ese) {}
+	}
 }
 
