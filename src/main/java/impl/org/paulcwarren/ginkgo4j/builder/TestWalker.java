@@ -38,7 +38,8 @@ public class TestWalker implements TestVisitor {
 		try {
 			Ginkgo4jDSL.setVisitor(this);
 			try {
-				testClass.newInstance();
+				Object test = testClass.newInstance();
+				test(test);
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -90,6 +91,13 @@ public class TestWalker implements TestVisitor {
 	public void afterEach(ExecutableBlock block) {
 		for (TestVisitor visitor : visitors) {
 			visitor.afterEach(block);
+		}
+	}
+
+	@Override
+	public void test(Object test) {
+		for (TestVisitor visitor : visitors) {
+			visitor.test(test);
 		}
 	}
 }

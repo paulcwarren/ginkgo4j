@@ -1,20 +1,22 @@
 package impl.org.paulcwarren.ginkgo4j.runner;
 
-import org.junit.runner.Description;
-import org.junit.runner.notification.RunNotifier;
+import org.paulcwarren.ginkgo4j.ExecutableChain;
 
-public class SpecSkipperThread extends Thread {
+public class SpecSkipperThread implements Runner {
 
-	private RunNotifier notifier;
-	private Description desc;
+	private ExecutableChain chain;
 	
-	public SpecSkipperThread(RunNotifier notifier, Description desc) {
-		this.notifier = notifier;
-		this.desc = desc;
+	public SpecSkipperThread(ExecutableChain chain) {
+		this.chain = chain;
+	}
+
+	@Override
+	public ExecutableChain getChain() {
+		return this.chain;
 	}
 	
 	@Override
 	public void run() {
-		notifier.fireTestIgnored(desc);
+		// do nothing!
 	}
 }

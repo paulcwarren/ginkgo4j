@@ -90,5 +90,11 @@ public class DescriptionsCollector implements TestVisitor {
 			context.peek().addChild(childDesc);
 		} catch (EmptyStackException ese) {}
 	}
+
+	@Override
+	public void test(Object test) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

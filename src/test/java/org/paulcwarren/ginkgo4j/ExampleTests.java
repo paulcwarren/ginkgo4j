@@ -1,10 +1,14 @@
 package org.paulcwarren.ginkgo4j;
 
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.AfterEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
-
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 
 @Ignore
 @RunWith(Ginkgo4jRunner.class)

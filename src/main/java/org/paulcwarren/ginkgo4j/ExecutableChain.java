@@ -6,6 +6,7 @@ import java.util.List;
 public class ExecutableChain {
 	
 	private String id;
+	private Object testObject;
 	private boolean isFocused;
 	
 	public ExecutableChain(String id) {
@@ -21,6 +22,14 @@ public class ExecutableChain {
 		return this.id;
 	}
 	
+	public Object getTestObject() {
+		return testObject;
+	}
+
+	public void setTestObject(Object testObject) {
+		this.testObject = testObject;
+	}
+
 	public List<ExecutableBlock> getBeforeEachs() {
 		return beforeEachs;
 	}
@@ -47,5 +56,22 @@ public class ExecutableChain {
 	
 	public void setIsFocused(boolean isFocused) {
 		this.isFocused = isFocused;
+	}
+	
+	public void execute() throws Exception {
+
+		for (ExecutableBlock block : this.getBeforeEachs()) {
+			block.invoke();
+		}
+	
+		for (ExecutableBlock block : this.getJustBeforeEachs()) {
+			block.invoke();
+		}
+	
+		this.getSpec().invoke();
+
+		for (ExecutableBlock block : this.getAfterEachs()) {
+			block.invoke();
+    	}
 	}
 }

@@ -68,4 +68,10 @@ public class SpecsCollector implements TestVisitor {
 		builder.append(text);
 		return builder.toString();
 	}
+
+	@Override
+	public void test(Object test) {
+		// TODO Auto-generated method stub
+		
+	}
 }

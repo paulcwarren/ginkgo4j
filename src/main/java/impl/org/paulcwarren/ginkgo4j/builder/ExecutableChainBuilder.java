@@ -79,4 +79,9 @@ public class ExecutableChainBuilder implements TestVisitor {
 		return newFilter;
 	}
 
+	@Override
+	public void test(Object test) {
+		chain.setTestObject(test);
+	}
+
 }

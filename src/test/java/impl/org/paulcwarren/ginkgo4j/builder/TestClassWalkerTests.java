@@ -43,6 +43,7 @@ public class TestClassWalkerTests  {
 					order.verify(visitorSpy).beforeEach(anyObject());
 					order.verify(visitorSpy).it(anyString(), anyObject(), eq(false));
 					order.verify(visitorSpy).afterEach(anyObject());
+					order.verify(visitorSpy).test(anyObject());
 					verifyNoMoreInteractions(visitorSpy);
 				});
 			});
@@ -88,6 +89,9 @@ public class TestClassWalkerTests  {
 		}
 		@Override
 		public void afterEach(ExecutableBlock block) {
+		}
+		@Override
+		public void test(Object test) {
 		}
 	}
 }

@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.mockito.Mockito.mock;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
 
 import impl.org.paulcwarren.ginkgo4j.Spec;
+import impl.org.paulcwarren.ginkgo4j.runner.Runner;
 import impl.org.paulcwarren.ginkgo4j.runner.SpecRunnerThread;
 import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipperThread;
 
@@ -38,7 +39,7 @@ public class Ginkgo4jRunnerTests {
 					runner = new Ginkgo4jRunner(TestClass.class);
 				});
 				It("should return a full chain with no focus", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(TestClass.class);
 					assertThat(chains, is(not(nullValue())));
 					assertThat(chains.size(), is(3));
 					assertThat(getExecutableChain("test1", chains).isFocused(), is(false));
@@ -51,7 +52,7 @@ public class Ginkgo4jRunnerTests {
 					runner = new Ginkgo4jRunner(FittedTestClass.class);
 				});
 				It("should return a full chain with just the focused spec", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedTestClass.class);
 					assertThat(chains, is(not(nullValue())));
 					assertThat(chains.size(), is(3));
 					assertThat(getExecutableChain("test1", chains).isFocused(), is(false));
@@ -68,8 +69,8 @@ public class Ginkgo4jRunnerTests {
 					runner.getDescription();
 				});
 				It("should return all SpecRunnerThreads", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(TestClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(3));
@@ -82,8 +83,8 @@ public class Ginkgo4jRunnerTests {
 					runner.getDescription();
 				});
 				It("should return one SpecRunnerThread and two SpecSkipperThreads", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedTestClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(3));
@@ -96,16 +97,16 @@ public class Ginkgo4jRunnerTests {
 					runner.getDescription();
 				});
 				It("should return a SpecRunnerThread for all tests in the fitted context", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedContextClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(5));
 					assertThat(runnerThreads(workers), is(2));
 				});
 				It("should return SpecSkipperThreads for everything else", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedContextClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(5));
@@ -118,16 +119,16 @@ public class Ginkgo4jRunnerTests {
 					runner.getDescription();
 				});
 				It("should return a SpecRunnerThread for all tests in the fitted describe", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedDescribeClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(7));
 					assertThat(runnerThreads(workers), is(2));
 				});
 				It("should return SpecSkipperThreads for everything else", () -> {
-					List<ExecutableChain> chains = runner.calculateExecutionChains();
-					List<Thread> workers = runner.calculateWorkerThreads(mock(RunNotifier.class), chains);
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(FittedDescribeClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(mock(RunNotifier.class), chains);
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(7));
@@ -146,9 +147,9 @@ public class Ginkgo4jRunnerTests {
 		throw new IllegalArgumentException();
 	}
 	
-	private Object runnerThreads(List<Thread> workers) {
+	private Object runnerThreads(List<Runner> workers) {
 		int i=0;
-		for (Thread thread : workers) {
+		for (Runner thread : workers) {
 			if (thread instanceof SpecRunnerThread) {
 				i++;
 			}
@@ -156,9 +157,9 @@ public class Ginkgo4jRunnerTests {
 		return i;
 	}
 
-	private Object skipperThreads(List<Thread> workers) {
+	private Object skipperThreads(List<Runner> workers) {
 		int i=0;
-		for (Thread thread : workers) {
+		for (Runner thread : workers) {
 			if (thread instanceof SpecSkipperThread) {
 				i++;
 			}
