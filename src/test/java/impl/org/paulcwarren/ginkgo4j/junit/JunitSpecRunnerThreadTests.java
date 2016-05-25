@@ -20,7 +20,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.mockito.InOrder;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.org.paulcwarren.ginkgo4j.runner.SpecRunnerThread;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecRunner;
 
 @RunWith(Ginkgo4jRunner.class)
 public class JunitSpecRunnerThreadTests {
@@ -31,13 +31,13 @@ public class JunitSpecRunnerThreadTests {
 	// mocks
 	private RunNotifier notifier;
 	private Description description;
-	private SpecRunnerThread runner;
+	private SpecRunner runner;
 	
 	{
 		Describe("RunnerThread", () -> {
 
 			BeforeEach(() -> {
-				runner = mock(SpecRunnerThread.class);
+				runner = mock(SpecRunner.class);
 				notifier = mock(RunNotifier.class);
 				description = mock(Description.class);
 			});

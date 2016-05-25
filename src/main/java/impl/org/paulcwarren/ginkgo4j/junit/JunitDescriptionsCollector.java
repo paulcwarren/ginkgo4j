@@ -1,4 +1,4 @@
-package impl.org.paulcwarren.ginkgo4j.builder;
+package impl.org.paulcwarren.ginkgo4j.junit;
 
 import java.lang.annotation.Annotation;
 import java.util.EmptyStackException;
@@ -9,13 +9,15 @@ import java.util.Stack;
 import org.junit.runner.Description;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
 
-public class DescriptionsCollector implements TestVisitor {
+import impl.org.paulcwarren.ginkgo4j.builder.TestVisitor;
+
+public class JunitDescriptionsCollector implements TestVisitor {
 	
 	private Map<String, Description> descriptions = new HashMap<>();
 	private Stack<Description> context = new Stack<>();
 	private Description description;
 	
-	public DescriptionsCollector(Description description) {
+	public JunitDescriptionsCollector(Description description) {
 		this.description = description;
 	}
 

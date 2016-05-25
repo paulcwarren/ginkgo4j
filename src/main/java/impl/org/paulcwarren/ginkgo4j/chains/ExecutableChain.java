@@ -1,7 +1,9 @@
-package org.paulcwarren.ginkgo4j;
+package impl.org.paulcwarren.ginkgo4j.chains;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.paulcwarren.ginkgo4j.ExecutableBlock;
 
 public class ExecutableChain {
 	

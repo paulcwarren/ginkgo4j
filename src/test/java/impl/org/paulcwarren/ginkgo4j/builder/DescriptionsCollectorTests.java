@@ -18,18 +18,20 @@ import org.junit.runner.RunWith;
 import org.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
+import impl.org.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
+
 @RunWith(Ginkgo4jRunner.class)
 @Ginkgo4jConfiguration(threads=1)
 public class DescriptionsCollectorTests {
 	
 	private TestWalker walker;
-	private DescriptionsCollector collector;
+	private JunitDescriptionsCollector collector;
 	private Description description;
 	{
 		Describe("Descriptions Collector", () -> {
 			BeforeEach(() -> {
 				description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
-				collector = new DescriptionsCollector(description);
+				collector = new JunitDescriptionsCollector(description);
 				walker = new TestWalker(TestClass.class);
 				walker.walk(collector);
 			});

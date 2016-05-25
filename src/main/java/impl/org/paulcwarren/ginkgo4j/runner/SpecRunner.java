@@ -1,13 +1,14 @@
 package impl.org.paulcwarren.ginkgo4j.runner;
 
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
-import org.paulcwarren.ginkgo4j.ExecutableChain;
 
-public class SpecRunnerThread implements Runner {
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
+
+public class SpecRunner implements Runner {
 
 	private ExecutableChain chain;
 	
-	public SpecRunnerThread(ExecutableChain chain) {
+	public SpecRunner(ExecutableChain chain) {
 		this.chain = chain;
 	}
 	

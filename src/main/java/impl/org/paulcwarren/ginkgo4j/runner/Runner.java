@@ -1,6 +1,6 @@
 package impl.org.paulcwarren.ginkgo4j.runner;
 
-import org.paulcwarren.ginkgo4j.ExecutableChain;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
 
 public interface Runner {
 	ExecutableChain getChain();

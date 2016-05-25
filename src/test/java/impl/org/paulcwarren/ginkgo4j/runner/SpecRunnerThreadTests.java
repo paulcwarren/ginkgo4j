@@ -13,14 +13,15 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
-import org.paulcwarren.ginkgo4j.ExecutableChain;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
+
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
 
 @RunWith(Ginkgo4jRunner.class)
 public class SpecRunnerThreadTests {
 
 	// test classes
-	private SpecRunnerThread runner;
+	private SpecRunner runner;
 	private ExecutableChain chain;
 
 	// mocks
@@ -37,7 +38,7 @@ public class SpecRunnerThreadTests {
 			});
 
 			JustBeforeEach(() -> {
-				runner = new SpecRunnerThread(chain);
+				runner = new SpecRunner(chain);
 				try {
 					runner.run();
 				} catch (Exception e) {}

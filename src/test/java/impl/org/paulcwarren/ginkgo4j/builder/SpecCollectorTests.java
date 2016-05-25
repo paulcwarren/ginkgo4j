@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
+import impl.org.paulcwarren.ginkgo4j.chains.SpecsCollector;
+
 @RunWith(Ginkgo4jRunner.class)
 @Ginkgo4jConfiguration(threads=1)
 public class SpecCollectorTests {

@@ -16,6 +16,8 @@ import org.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import org.paulcwarren.ginkgo4j.Ginkgo4jDSL;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChainBuilder;
+
 @RunWith(Ginkgo4jRunner.class)
 @Ginkgo4jConfiguration(threads = 1)
 public class ExecutableChainBuilderTests {

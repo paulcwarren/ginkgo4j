@@ -21,9 +21,10 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
 
 import impl.org.paulcwarren.ginkgo4j.Spec;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
 import impl.org.paulcwarren.ginkgo4j.runner.Runner;
-import impl.org.paulcwarren.ginkgo4j.runner.SpecRunnerThread;
-import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipperThread;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecRunner;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipper;
 
 @SuppressWarnings("unchecked")
 @RunWith(Ginkgo4jRunner.class)
@@ -74,7 +75,7 @@ public class Ginkgo4jRunnerTests {
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(3));
-					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecRunnerThread.class))));
+					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecRunner.class)), is(instanceOf(SpecRunner.class)), is(instanceOf(SpecRunner.class))));
 				});
 			});
 			Context("when called with at least one focused spec", () -> {
@@ -88,7 +89,7 @@ public class Ginkgo4jRunnerTests {
 
 					assertThat(workers, is(not(nullValue())));
 					assertThat(workers.size(), is(3));
-					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecSkipperThread.class)), is(instanceOf(SpecRunnerThread.class)), is(instanceOf(SpecSkipperThread.class))));
+					assertThat(workers, containsInAnyOrder(is(instanceOf(SpecSkipper.class)), is(instanceOf(SpecRunner.class)), is(instanceOf(SpecSkipper.class))));
 				});
 			});
 			Context("when called with at a focused context", () -> {
@@ -150,7 +151,7 @@ public class Ginkgo4jRunnerTests {
 	private Object runnerThreads(List<Runner> workers) {
 		int i=0;
 		for (Runner thread : workers) {
-			if (thread instanceof SpecRunnerThread) {
+			if (thread instanceof SpecRunner) {
 				i++;
 			}
 		}
@@ -160,7 +161,7 @@ public class Ginkgo4jRunnerTests {
 	private Object skipperThreads(List<Runner> workers) {
 		int i=0;
 		for (Runner thread : workers) {
-			if (thread instanceof SpecSkipperThread) {
+			if (thread instanceof SpecSkipper) {
 				i++;
 			}
 		}

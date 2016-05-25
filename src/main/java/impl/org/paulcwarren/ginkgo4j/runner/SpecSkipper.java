@@ -1,12 +1,12 @@
 package impl.org.paulcwarren.ginkgo4j.runner;
 
-import org.paulcwarren.ginkgo4j.ExecutableChain;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
 
-public class SpecSkipperThread implements Runner {
+public class SpecSkipper implements Runner {
 
 	private ExecutableChain chain;
 	
-	public SpecSkipperThread(ExecutableChain chain) {
+	public SpecSkipper(ExecutableChain chain) {
 		this.chain = chain;
 	}
 

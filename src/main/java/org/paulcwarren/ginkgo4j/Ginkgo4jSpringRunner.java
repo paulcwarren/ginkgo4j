@@ -12,8 +12,9 @@ import org.junit.runners.model.Statement;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import impl.org.paulcwarren.ginkgo4j.builder.DescriptionsCollector;
 import impl.org.paulcwarren.ginkgo4j.builder.TestWalker;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
+import impl.org.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
 
 public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 
@@ -31,7 +32,7 @@ public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 		if (description == null) {
 			description = Description.createSuiteDescription(testClass.getName(), (Annotation[])null);
 
-			DescriptionsCollector descCollector = new DescriptionsCollector(description);
+			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
 			new TestWalker(testClass).walk(descCollector);
 			descriptions = descCollector.getDescriptions();
 		}

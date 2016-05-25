@@ -1,7 +1,8 @@
-package impl.org.paulcwarren.ginkgo4j.builder;
+package impl.org.paulcwarren.ginkgo4j.chains;
 
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
-import org.paulcwarren.ginkgo4j.ExecutableChain;
+
+import impl.org.paulcwarren.ginkgo4j.builder.TestVisitor;
 
 public class ExecutableChainBuilder implements TestVisitor {
 

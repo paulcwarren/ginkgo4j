@@ -1,4 +1,4 @@
-package impl.org.paulcwarren.ginkgo4j.builder;
+package impl.org.paulcwarren.ginkgo4j.chains;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Stack;
 import org.paulcwarren.ginkgo4j.ExecutableBlock;
 
 import impl.org.paulcwarren.ginkgo4j.Spec;
+import impl.org.paulcwarren.ginkgo4j.builder.TestVisitor;
 
 public class SpecsCollector implements TestVisitor {
 	

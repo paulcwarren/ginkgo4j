@@ -16,14 +16,15 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
 import impl.org.paulcwarren.ginkgo4j.Spec;
-import impl.org.paulcwarren.ginkgo4j.builder.DescriptionsCollector;
-import impl.org.paulcwarren.ginkgo4j.builder.ExecutableChainBuilder;
-import impl.org.paulcwarren.ginkgo4j.builder.SpecsCollector;
 import impl.org.paulcwarren.ginkgo4j.builder.TestWalker;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChain;
+import impl.org.paulcwarren.ginkgo4j.chains.ExecutableChainBuilder;
+import impl.org.paulcwarren.ginkgo4j.chains.SpecsCollector;
+import impl.org.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
 import impl.org.paulcwarren.ginkgo4j.junit.JunitSpecRunnerThread;
 import impl.org.paulcwarren.ginkgo4j.junit.JunitSpecSkipperThread;
-import impl.org.paulcwarren.ginkgo4j.runner.SpecRunnerThread;
-import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipperThread;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecRunner;
+import impl.org.paulcwarren.ginkgo4j.runner.SpecSkipper;
 
 public class Ginkgo4jRunner extends Runner {
 
@@ -40,7 +41,7 @@ public class Ginkgo4jRunner extends Runner {
 		if (description == null) {
 			description = Description.createSuiteDescription(testClass.getName(), (Annotation[])null);
 
-			DescriptionsCollector descCollector = new DescriptionsCollector(description);
+			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
 			new TestWalker(testClass).walk(descCollector);
 			descriptions = descCollector.getDescriptions();
 		}
@@ -84,10 +85,10 @@ public class Ginkgo4jRunner extends Runner {
 
 		for(ExecutableChain chain : chains) {
 			if (chain.isFocused()) {
-				focusedWorkers.add(new SpecRunnerThread(chain));
+				focusedWorkers.add(new SpecRunner(chain));
 			} else {
-				workers.add(new SpecRunnerThread(chain));
-				skippedWorkers.add(new SpecSkipperThread(chain));
+				workers.add(new SpecRunner(chain));
+				skippedWorkers.add(new SpecSkipper(chain));
 			}
 		}
 		
@@ -125,13 +126,13 @@ public class Ginkgo4jRunner extends Runner {
 	static List<Thread> threadWrap(List<impl.org.paulcwarren.ginkgo4j.runner.Runner> runners, RunNotifier notifier, Map<String,Description> descriptions) {
 		List<Thread> workers = new ArrayList<>();
 		for (impl.org.paulcwarren.ginkgo4j.runner.Runner runner : runners) {
-			if (runner instanceof SpecRunnerThread) {
+			if (runner instanceof SpecRunner) {
 				Description desc = descriptions.get(runner.getChain().getId());
 				if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", runner.getChain().getId()));
 				
 				Thread t = new JunitSpecRunnerThread(runner, notifier, desc);
 				workers.add(t);
-			} else if (runner instanceof SpecSkipperThread) {
+			} else if (runner instanceof SpecSkipper) {
 				Description desc = descriptions.get(runner.getChain().getId());
 				if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", runner.getChain().getId()));
 				
