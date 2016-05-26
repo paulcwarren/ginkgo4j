@@ -5,6 +5,35 @@
 	<artifactId>ginkgo4j</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<name>Ginkgo 4 Java</name>
+	<url>https://github.com/paulcwarren/ginkgo4j</url>
+	<description>Ginkgo/RSpec testing for Java</description>
+	<organization>
+		<name>Paul Warren</name>
+		<url>https://github.com/paulcwarren</url>
+	</organization>
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/paulcwarren/ginkgo4j/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/paulcwarren/ginkgo4j</url>
+	</ciManagement>
+
+	<scm>
+		<url>http://github.com/paulcwarren/ginkgo4j</url>
+		<developerConnection>Paul Warren</developerConnection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -36,20 +65,20 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<dependencyManagement>
-	     <dependencies>
-	        <dependency>
-	            <!-- Import dependency management from Spring Boot -->
-	            <groupId>org.springframework.boot</groupId>
-	            <artifactId>spring-boot-dependencies</artifactId>
-	            <version>1.3.5.RELEASE</version>
-	            <type>pom</type>
-	            <scope>import</scope>
-	        </dependency>
-	    </dependencies>
+		<dependencies>
+			<dependency>
+				<!-- Import dependency management from Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.3.5.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 
 	<build>
