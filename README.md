@@ -35,7 +35,7 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 ``` 
 - Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
-See [ExampleTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/ExampleTests.java) for a working example. 
+See [ExampleTests.java](https://github.com/paulcwarren/ginkgo4j/blob/master/src/test/java/org/paulcwarren/ginkgo4j/ExampleTests.java) for a working example. 
 	
 ## Getting Started with Spring
 
@@ -63,7 +63,7 @@ import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 ```
 - Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
-See [Ginkgo4jSpringApplicationTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/spring/Ginkgo4jSpringApplicationTests.java) for a working example. 	
+See [Ginkgo4jSpringApplicationTests.java](https://github.com/paulcwarren/ginkgo4j/blob/master/src/test/java/org/paulcwarren/ginkgo4j/spring/Ginkgo4jSpringApplicationTests.java) for a working example. 	
 
 ## Screenshots
 ### Eclipse
