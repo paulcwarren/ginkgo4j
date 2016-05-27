@@ -8,20 +8,62 @@ Currently supports:-
 - Focusing of tests through FDescribe, FContext and FIt constructs
 - Any level of nested contexts
 - Threaded execution (default is 4 threads)
-- Integrated into junit (so works in IDEs)
+- Integrated into junit (works in IDEs)
 - Integrated into maven 
+- Supports spring allowing test classes to use a spring application context  
 
 ## Getting Started
 
+- Create a junit test class
+- Add the following import:-
+```
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+```
+- Annotate your test class with:-
+```
+@RunWith(Ginkgo4jRunner.class)
+```
+- And the following template:-
+```
+	{
+		Describe("Replace me", () -> {
+			It("Replace me too", () -> {
+				fail("Not yet implemented");
+			});
+		});
+	}
+``` 
+- Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
+
+See [ExampleTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/ExampleTests.java) for a working example. 
+	
+## Getting Started with Spring
+
 - Create a junit test
-- Annotate your test class with `@RunWith(Ginkgo4jRunner.class)`
-- Control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
+- Annotate your test class with:-
+```
+@RunWith(Ginkgo4jSpringRunner.class)
+```
+- Add the following import:-
+```
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+```
+- Add the following template:-
+```
+	{
+		Describe("Replace me", () -> {
+			It("Replace me too", () -> {
+				fail("Not yet implemented");
+			});
+		});
+	}
+	@Test
+	public void noop() {
+	}
+```
+- Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
-See the ginkgo docs for more information of BDD and writing ginkgo BDD tests.  
-
-Ginkgo4j is tested with itself.  See [RunnerThreadTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/runner/RunnerThreadTests.java) or [ExecutableChainBuilderTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/builder/ExecutableChainBuilderTests.java) for Java examples. 
-
-More readable Java examples to follow.... 
+See [Ginkgo4jSpringApplicationTests.java](src/test/java/impl/org/paulcwarren/ginkgo4j/spring/Ginkgo4jSpringApplicationTests.java) for a working example. 	
 
 ## Screenshots
 ### Eclipse
@@ -29,5 +71,3 @@ More readable Java examples to follow....
 
 ### Intellij
 ![Intellij](readme/intellij-junit.png)
-
-

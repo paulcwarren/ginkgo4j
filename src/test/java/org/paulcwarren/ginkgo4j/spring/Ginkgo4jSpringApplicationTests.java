@@ -36,7 +36,6 @@ public class Ginkgo4jSpringApplicationTests {
 	}
 	
 	@Test
-	public void contextLoads() {
-		assertThat(helloService, is(not(nullValue())));
+	public void noop() {
 	}
 }
