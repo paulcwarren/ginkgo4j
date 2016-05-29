@@ -12,12 +12,17 @@ Currently supports:-
 - Integrated into maven 
 - Supports spring allowing test classes to use a spring application context  
 
+## Requires
+
+- Java 8
+
 ## Getting Started
 
 - Create a junit test class
-- Add the following import:-
+- Add the following imports:-
 ```
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 ```
 - Annotate your test class with:-
 ```
@@ -40,13 +45,14 @@ See [ExampleTests.java](https://github.com/paulcwarren/ginkgo4j/blob/master/src/
 ## Getting Started with Spring
 
 - Create a junit test
+- Add the following imports:-
+```
+import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import org.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
+```
 - Annotate your test class with:-
 ```
 @RunWith(Ginkgo4jSpringRunner.class)
-```
-- Add the following import:-
-```
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 ```
 - Add the following template:-
 ```
