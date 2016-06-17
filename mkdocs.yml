@@ -1,0 +1,4 @@
+site_name: Ginkgo4j 
+pages:
+- Home: index.md
+theme: readthedocs
