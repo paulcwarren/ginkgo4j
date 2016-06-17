@@ -1,34 +1,50 @@
 # Ginkgo4j
 ##A Java BDD Testing Framework  (based on [ginkgo](http://onsi.github.io/ginkgo/))
-
 [![Build Status](https://travis-ci.org/paulcwarren/ginkgo4j.svg?branch=master)](https://travis-ci.org/paulcwarren/ginkgo4j)
 
-Currently supports:-
-- Describe, Context, BeforeEach, JustBeforeEach, It and AfterEach constructs
-- Focusing of tests through FDescribe, FContext and FIt constructs
-- Any level of nested contexts
-- Threaded execution (default is 4 threads)
-- Integrated into junit (works in IDEs)
-- Integrated into maven 
-- Supports spring allowing test classes to use a spring application context  
+Jump to the the [docs](paulcwarren.github.com/ginkgo4j) to see more.
+
+Feature List:-
+- Structure your BDD-style tests expressively:
+  - Nestable Describe and Context container blocks
+  - BeforeEach and AfterEach blocks for setup and teardown
+  - It blocks that hold your assertions
+  - JustBeforeEach blocks that separate creation from configuration (also known as the subject action pattern).
+
+- Test runners that lets you:
+  - Focus tests through FDescribe, FContext and FIt constructs
+  - Test your Spring applications  
 
 ## Requires
-
 - Java 8
 
 ## Getting Started
+- Add the ginkgo4j to your project as a test dependency.  For a maven project add:-
+
+```
+<dependency>
+    <groupId>com.github.paulcwarren</groupId>
+    <artifactId>ginkgo4j</artifactId>
+    <version>1.0.0</version>
+    <scope>test</test>
+</dependency>
+```
+or for a Gradle project add:-
+`compile 'com.github.paulcwarren:ginkgo4j:1.0.0'`
+
+for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.0%7Cjar).
 
 - Create a junit test class
-- Add the following imports:-
+  - Add the following imports:-
 ```
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 ```
-- Annotate your test class with:-
+  - Annotate your test class with:-
 ```
 @RunWith(Ginkgo4jRunner.class)
 ```
-- And the following template:-
+  - And the following template:-
 ```
 	{
 		Describe("Replace me", () -> {
@@ -38,23 +54,19 @@ import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 		});
 	}
 ``` 
-- Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
+   - Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
-See [ExampleTests.java](https://github.com/paulcwarren/ginkgo4j/blob/master/src/test/java/com/github/paulcwarren/ginkgo4j/ExampleTests.java) for a working example. 
-	
-## Getting Started with Spring
-
-- Create a junit test
-- Add the following imports:-
+### Getting Started with Spring
+   - Add the following imports:-
 ```
 import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 import org.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 ```
-- Annotate your test class with:-
+   - Annotate your test class with:-
 ```
 @RunWith(Ginkgo4jSpringRunner.class)
 ```
-- Add the following template:-
+   - Add the following template:-
 ```
 	{
 		Describe("Replace me", () -> {
@@ -67,9 +79,7 @@ import org.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 	public void noop() {
 	}
 ```
-- Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
-
-See [Ginkgo4jSpringApplicationTests.java](https://github.com/paulcwarren/ginkgo4j/blob/master/src/test/java/com/github/paulcwarren/ginkgo4j/spring/Ginkgo4jSpringApplicationTests.java) for a working example. 	
+   - Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
 ## Screenshots
 ### Eclipse
