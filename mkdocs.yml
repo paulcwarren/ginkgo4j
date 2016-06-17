@@ -1,4 +1,5 @@
 site_name: Ginkgo4j 
+repo_url: https://github.com/paulcwarren/ginkgo4j.git
 pages:
 - Home: index.md
 theme: readthedocs
