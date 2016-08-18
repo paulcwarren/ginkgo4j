@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.runner.RunWith;
 
+import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
@@ -24,6 +25,9 @@ import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChainBuilder;
 public class ExecutableChainBuilderTests {
 	
 	private ExecutableChainBuilder bldr;
+	private It it1 = new It();
+	private It it2 = new It();
+	
 	{
 		Describe("ExecutableChainBuilder Tests", () -> {
 			
@@ -68,6 +72,71 @@ public class ExecutableChainBuilderTests {
 					assertThat(bldr.getExecutableChain().getAfterEachs().size(), is(0));
 				});
 			});
+
+			Context("when a describe block has two similar Describes", () -> {
+
+				BeforeEach(() -> {
+					bldr = new ExecutableChainBuilder("describe something similar.context.it");
+					Ginkgo4jDSL.setVisitor(bldr);
+					Ginkgo4jDSL.Describe("describe", () -> {
+						Context("context", () -> {
+							It("it", it1);
+						});
+					});
+					Ginkgo4jDSL.Describe("describe something similar", () -> {
+						Context("context", () -> {
+							It("it", it2);
+						});
+					});
+					Ginkgo4jDSL.unsetVisitor(bldr);
+				});
+
+				It("should capture the correct It", () -> {
+					assertThat(bldr.getExecutableChain().getSpec(), is(it2));
+				});
+			});
+
+			Context("when a describe block has two similar Contexts", () -> {
+
+				BeforeEach(() -> {
+					bldr = new ExecutableChainBuilder("describe.does something similar.it");
+					Ginkgo4jDSL.setVisitor(bldr);
+					Ginkgo4jDSL.Describe("describe", () -> {
+						Context("does something", () -> {
+							It("it", it1);
+						});
+						Context("does something similar", () -> {
+							It("it", it2);
+						});
+					});
+					Ginkgo4jDSL.unsetVisitor(bldr);
+				});
+
+				It("should capture the correct It", () -> {
+					assertThat(bldr.getExecutableChain().getSpec(), is(it2));
+				});
+			});
+
+			Context("when a describe block has two similar Its", () -> {
+
+				BeforeEach(() -> {
+					bldr = new ExecutableChainBuilder("describe.does something similar");
+					Ginkgo4jDSL.setVisitor(bldr);
+					Ginkgo4jDSL.Describe("describe", () -> {
+						It("does something", it1);
+						It("does something similar", it2);
+					});
+					Ginkgo4jDSL.unsetVisitor(bldr);
+				});
+
+				It("should capture the correct It", () -> {
+					assertThat(bldr.getExecutableChain().getSpec(), is(it2));
+				});
+			});
 		});
+	}
+	
+	public class It implements ExecutableBlock {
+		@Override public void invoke() throws Exception {}
 	}
 }

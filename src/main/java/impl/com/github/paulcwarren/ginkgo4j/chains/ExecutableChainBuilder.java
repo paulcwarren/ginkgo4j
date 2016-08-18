@@ -20,7 +20,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void describe(String text, ExecutableBlock block, boolean isFocused) {
-		if (filter.startsWith(text)) {
+		if (filter.startsWith(text + ".")) {
 			filter = splitFilter(filter, text);
 			chain.setIsFocused(isFocused);
 			try {
@@ -33,7 +33,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void context(String text, ExecutableBlock block, boolean isFocused) {
-		if (filter.startsWith(text)) {
+		if (filter.startsWith(text + ".")) {
 			filter = splitFilter(filter, text);
 			chain.setIsFocused(isFocused |= chain.isFocused());
 			try {
@@ -56,7 +56,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
-		if (filter.startsWith(text)) {
+		if (filter.equals(text)) {
 			filter = splitFilter(filter, text);
 			try {
 				chain.setSpec(block);
