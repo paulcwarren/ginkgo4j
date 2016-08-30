@@ -37,8 +37,8 @@ for other build systems see [here](http://search.maven.org/#artifactdetails%7Cco
 - Create a junit test class
   - Add the following imports:-
 ```
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
-import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
+import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 ```
   - Annotate your test class with:-
 ```
@@ -59,8 +59,8 @@ import org.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 ### Getting Started with Spring
    - Add the following imports:-
 ```
-import static org.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
-import org.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
+import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 ```
    - Annotate your test class with:-
 ```
