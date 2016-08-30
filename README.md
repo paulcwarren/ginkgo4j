@@ -26,7 +26,7 @@ Feature List:-
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
     <version>1.0.0</version>
-    <scope>test</test>
+    <scope>test</scope>
 </dependency>
 ```
 or for a Gradle project add:-
