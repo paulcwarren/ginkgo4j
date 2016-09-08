@@ -21,15 +21,17 @@ public class SpecRunner implements Runner {
 		for (ExecutableBlock block : chain.getBeforeEachs()) {
 			block.invoke();
 		}
-	
-		for (ExecutableBlock block : chain.getJustBeforeEachs()) {
-			block.invoke();
-		}
-	
-		chain.getSpec().invoke();
 
-		for (ExecutableBlock block : chain.getAfterEachs()) {
-			block.invoke();
-    	}
+		try {
+			for (ExecutableBlock block : chain.getJustBeforeEachs()) {
+				block.invoke();
+			}
+
+			chain.getSpec().invoke();
+		} finally {
+			for (ExecutableBlock block : chain.getAfterEachs()) {
+				block.invoke();
+			}
+		}
 	}
 }
