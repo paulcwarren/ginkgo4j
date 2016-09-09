@@ -77,6 +77,25 @@ public class SpecRunnerThreadTests {
 				
 			});
 
+			Context("when a JustBeforeEach throws an Exception", () -> {
+
+				BeforeEach(() ->{
+					setupOneBeforeOneAfterSpec();
+					justBefore = mock(ExecutableBlock.class);
+					chain.getJustBeforeEachs().add(justBefore);
+					doThrow(Exception.class).when(justBefore).invoke();
+				});
+
+				It("should call Before, JustBefore and After", () -> {
+					InOrder order = inOrder(/*notifier, */before, justBefore, after);
+					order.verify(before).invoke();
+					order.verify(justBefore).invoke();
+					order.verify(after).invoke();
+					verifyNoMoreInteractions(/*notifier, */before, justBefore, after);
+				});
+
+			});
+
 			Context("when an it throws an Exception", () -> {
 
 				BeforeEach(() ->{
@@ -84,13 +103,13 @@ public class SpecRunnerThreadTests {
 					doThrow(Exception.class).when(it).invoke();
 				});
 				
-				It("should call before each but not the spec or afters", () -> {
+				It("it should still call AfterEach after the spec", () -> {
 					InOrder order = inOrder(/*notifier, */before, it, after);
 					order.verify(before).invoke();
 					order.verify(it).invoke();
+					order.verify(after).invoke();
 					verifyNoMoreInteractions(/*notifier, */before, it, after);
 				});
-				
 			});
 
 
