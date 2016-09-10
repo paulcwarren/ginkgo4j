@@ -25,14 +25,14 @@ Feature List:-
 <dependency>
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <scope>test</scope>
 </dependency>
 ```
 or for a Gradle project add:-
-`compile 'com.github.paulcwarren:ginkgo4j:1.0.2'`
+`compile 'com.github.paulcwarren:ginkgo4j:1.0.3'`
 
-for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.0%7Cjar).
+for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.3%7Cjar).
 
 - Create a junit test class
   - Add the following imports:-
