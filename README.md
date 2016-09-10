@@ -25,12 +25,12 @@ Feature List:-
 <dependency>
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
 or for a Gradle project add:-
-`compile 'com.github.paulcwarren:ginkgo4j:1.0.0'`
+`compile 'com.github.paulcwarren:ginkgo4j:1.0.2'`
 
 for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.0%7Cjar).
 
@@ -79,7 +79,6 @@ import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 	public void noop() {
 	}
 ```
-   - Optionally, you can control the number of threads used with `@Ginkgo4jConfiguration(threads = 1)`
 
 ## Screenshots
 ### Eclipse

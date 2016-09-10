@@ -133,6 +133,60 @@ public class ExecutableChainBuilderTests {
 					assertThat(bldr.getExecutableChain().getSpec(), is(it2));
 				});
 			});
+
+			Context("when block descriptions contain regex special characters", () -> {
+
+				Context("when the describe contains regex special characters", ()-> {
+					BeforeEach(() -> {
+						bldr = new ExecutableChainBuilder("/{special}/{characters}/.context.it");
+						Ginkgo4jDSL.setVisitor(bldr);
+						Ginkgo4jDSL.Describe("/{special}/{characters}/", () -> {
+							Context("context", () -> {
+								It("it", it1);
+							});
+						});
+						Ginkgo4jDSL.unsetVisitor(bldr);
+					});
+
+					It("should capture the It", () -> {
+						assertThat(bldr.getExecutableChain().getSpec(), is(it1));
+					});
+				});
+				
+				Context("when the context contains regex special characters", ()-> {
+					BeforeEach(() -> {
+						bldr = new ExecutableChainBuilder("describe./{special}/{characters}/.it");
+						Ginkgo4jDSL.setVisitor(bldr);
+						Ginkgo4jDSL.Describe("describe", () -> {
+							Context("/{special}/{characters}/", () -> {
+								It("it", it1);
+							});
+						});
+						Ginkgo4jDSL.unsetVisitor(bldr);
+					});
+
+					It("should capture the It", () -> {
+						assertThat(bldr.getExecutableChain().getSpec(), is(it1));
+					});
+				});
+				
+				Context("when the it contains regex special characters", ()-> {
+					BeforeEach(() -> {
+						bldr = new ExecutableChainBuilder("describe.context./{special}/{characters}/");
+						Ginkgo4jDSL.setVisitor(bldr);
+						Ginkgo4jDSL.Describe("describe", () -> {
+							Context("context", () -> {
+								It("/{special}/{characters}/", it1);
+							});
+						});
+						Ginkgo4jDSL.unsetVisitor(bldr);
+					});
+
+					It("should capture the It", () -> {
+						assertThat(bldr.getExecutableChain().getSpec(), is(it1));
+					});
+				});
+			});
 		});
 	}
 	

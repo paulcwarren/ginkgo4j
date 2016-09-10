@@ -1,5 +1,7 @@
 package impl.com.github.paulcwarren.ginkgo4j.chains;
 
+import java.util.regex.Pattern;
+
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor;
@@ -73,7 +75,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 	}
 
 	private String splitFilter(String filter, String text) {
-		String newFilter = filter.replaceFirst(text, "");
+		String newFilter = filter.replaceFirst(Pattern.quote(text), "");
 		if (newFilter.startsWith(".")) {
 			newFilter = newFilter.substring(1, newFilter.length());
 		}
