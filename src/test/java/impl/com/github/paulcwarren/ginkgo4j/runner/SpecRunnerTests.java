@@ -5,6 +5,8 @@ import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -17,30 +19,31 @@ import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
-import impl.com.github.paulcwarren.ginkgo4j.runner.SpecRunner;
 
 @RunWith(Ginkgo4jRunner.class)
-public class SpecRunnerThreadTests {
+public class SpecRunnerTests {
 
 	// test classes
 	private SpecRunner runner;
 	private ExecutableChain chain;
 
 	// mocks
+	private RunnerListener listener;
 	private ExecutableBlock before;
 	private ExecutableBlock justBefore;
 	private ExecutableBlock it;
 	private ExecutableBlock after;
 	
 	{
-		Describe("RunnerThread", () -> {
+		Describe("SpecRunner", () -> {
 			
 			BeforeEach(() -> {
 				chain = new ExecutableChain("some id");
+				listener = mock(RunnerListener.class);
 			});
 
 			JustBeforeEach(() -> {
-				runner = new SpecRunner(chain);
+				runner = new SpecRunner(chain, listener);
 				try {
 					runner.run();
 				} catch (Exception e) {}
@@ -53,11 +56,13 @@ public class SpecRunnerThreadTests {
 				});
 				
 				It("should call before each, the spec and then after each", () -> {
-					InOrder order = inOrder(before, it, after);
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted(eq("some id"));
 					order.verify(before).invoke();
 					order.verify(it).invoke();
 					order.verify(after).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, it, after);
+					order.verify(listener).testFinished(eq("some id"));
+					verifyNoMoreInteractions(listener, before, it, after);
 				});
 				
 			});
@@ -70,9 +75,12 @@ public class SpecRunnerThreadTests {
 				});
 				
 				It("should call before each but not the spec or afters", () -> {
-					InOrder order = inOrder(/*notifier, */before, it, after);
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, it, after);
+					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it, after);
 				});
 				
 			});
@@ -87,11 +95,14 @@ public class SpecRunnerThreadTests {
 				});
 
 				It("should call Before, JustBefore and After", () -> {
-					InOrder order = inOrder(/*notifier, */before, justBefore, after);
+					InOrder order = inOrder(listener, before, justBefore, after);
+					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
 					order.verify(justBefore).invoke();
 					order.verify(after).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, justBefore, after);
+					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, justBefore, after);
 				});
 
 			});
@@ -104,11 +115,14 @@ public class SpecRunnerThreadTests {
 				});
 				
 				It("it should still call AfterEach after the spec", () -> {
-					InOrder order = inOrder(/*notifier, */before, it, after);
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
 					order.verify(it).invoke();
 					order.verify(after).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, it, after);
+					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it, after);
 				});
 			});
 
@@ -121,16 +135,19 @@ public class SpecRunnerThreadTests {
 				});
 				
 				It("should call before each but not the spec or afters", () -> {
-					InOrder order = inOrder(/*notifier, */before, it, after);
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
 					order.verify(it).invoke();
 					order.verify(after).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, it, after);
+					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it, after);
 				});
 				
 			});
 			
-			Context("when a spec has a BeforeEach", () -> {
+			Context("when a spec has a JustBeforeEach", () -> {
 
 				BeforeEach(() ->{
 					this.setupOneBeforeOneAfterSpec();
@@ -139,12 +156,14 @@ public class SpecRunnerThreadTests {
 				});
 				
 				It("should run after all Before's", () -> {
-					InOrder order = inOrder(/*notifier, */before, justBefore, it, after);
+					InOrder order = inOrder(listener, before, justBefore, it, after);
+					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
 					order.verify(justBefore).invoke();
 					order.verify(it).invoke();
 					order.verify(after).invoke();
-					verifyNoMoreInteractions(/*notifier, */before, justBefore, it, after);
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, justBefore, it, after);
 				});
 				
 			});

@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
-import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -21,8 +19,8 @@ import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChainBuilder;
 import impl.com.github.paulcwarren.ginkgo4j.chains.SpecsCollector;
 import impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
-import impl.com.github.paulcwarren.ginkgo4j.junit.JunitSpecRunnerThread;
-import impl.com.github.paulcwarren.ginkgo4j.junit.JunitSpecSkipperThread;
+import impl.com.github.paulcwarren.ginkgo4j.junit.JunitRunnerListener;
+import impl.com.github.paulcwarren.ginkgo4j.runner.RunnerListener;
 import impl.com.github.paulcwarren.ginkgo4j.runner.SpecRunner;
 import impl.com.github.paulcwarren.ginkgo4j.runner.SpecSkipper;
 
@@ -57,11 +55,10 @@ public class Ginkgo4jRunner extends Runner {
 		
 		List<ExecutableChain> chains = calculateExecutionChains(testClass);
 
-		List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> runners = calculateWorkerThreads(notifier, chains);
+		RunnerListener listener = new JunitRunnerListener(notifier, descriptions);
+		List<Runnable> runners = calculateWorkerThreads(chains, listener);
 
-		List<Thread> workers = threadWrap(runners, notifier, descriptions);
-		
-		threadExecute(workers, getThreads(testClass), notifier, description);
+		threadExecute(runners, getThreads(testClass));
    	}
 
 	static List<ExecutableChain> calculateExecutionChains(Class<?> testClass) {
@@ -77,7 +74,7 @@ public class Ginkgo4jRunner extends Runner {
     	return chains;
 	}
 
-	static List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> calculateWorkerThreads(RunNotifier notifier, List<ExecutableChain> chains) {
+	static List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> calculateWorkerThreads(List<ExecutableChain> chains) {
 		
 		List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> skippedWorkers = new ArrayList<>();
 		List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> focusedWorkers = new ArrayList<>();
@@ -102,45 +99,45 @@ public class Ginkgo4jRunner extends Runner {
 		}
 	}
 	
-	static void threadExecute(List<Thread> workers, int threads, RunNotifier notifier, Description description) {
-		notifier.fireTestStarted(description);
+	static List<Runnable> calculateWorkerThreads(List<ExecutableChain> chains, RunnerListener listener) {
+		
+		List<Runnable> skippedWorkers = new ArrayList<>();
+		List<Runnable> focusedWorkers = new ArrayList<>();
+		List<Runnable> workers = new ArrayList<>();
+
+		for(ExecutableChain chain : chains) {
+			if (chain.isFocused()) {
+				focusedWorkers.add(new SpecRunner(chain, listener));
+			} else {
+				workers.add(new SpecRunner(chain, listener));
+				skippedWorkers.add(new SpecSkipper(chain, listener));
+			}
+		}
+		
+		if (focusedWorkers.size() > 0) {
+			workers = new ArrayList<>();
+			workers.addAll(focusedWorkers);
+			workers.addAll(skippedWorkers);
+			return workers;
+		} else {
+			return workers;
+		}
+	}
+	
+	static void threadExecute(List<Runnable> workers, int threads) {
         try {
             ExecutorService executor = Executors.newFixedThreadPool(threads);
-            for (Thread runner : workers) {
+            for (Runnable runner : workers) {
                 executor.execute(runner);
             }
             executor.shutdown();
             while (!executor.isTerminated()) {
             	Thread.sleep(100);
             }
-
-        } catch (AssumptionViolatedException e) {
-        	notifier.fireTestAssumptionFailed(new Failure(description, e));
-        } catch (Throwable e) {
-        	notifier.fireTestFailure(new Failure(description, e));
-        } finally {
-        	notifier.fireTestFinished(description);
+        } catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
         }
-	}
-
-	static List<Thread> threadWrap(List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> runners, RunNotifier notifier, Map<String,Description> descriptions) {
-		List<Thread> workers = new ArrayList<>();
-		for (impl.com.github.paulcwarren.ginkgo4j.runner.Runner runner : runners) {
-			if (runner instanceof SpecRunner) {
-				Description desc = descriptions.get(runner.getChain().getId());
-				if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", runner.getChain().getId()));
-				
-				Thread t = new JunitSpecRunnerThread(runner, notifier, desc);
-				workers.add(t);
-			} else if (runner instanceof SpecSkipper) {
-				Description desc = descriptions.get(runner.getChain().getId());
-				if (desc == null) throw new IllegalStateException(String.format("Unable to find description for '%s'", runner.getChain().getId()));
-				
-				Thread t = new JunitSpecSkipperThread(notifier, desc);
-				workers.add(t);
-			}
-		}
-		return workers;
 	}
 
 	static int getThreads(Class<?> testClass) {

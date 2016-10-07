@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestWalker;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
 import impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
+import impl.com.github.paulcwarren.ginkgo4j.junit.JunitRunnerListener;
+import impl.com.github.paulcwarren.ginkgo4j.runner.RunnerListener;
 
 public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 
@@ -65,11 +67,10 @@ public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 					}
         		}
         		
-        		List<impl.com.github.paulcwarren.ginkgo4j.runner.Runner> runners = Ginkgo4jRunner.calculateWorkerThreads(notifier, chains);
+        		RunnerListener listener = new JunitRunnerListener(notifier, descriptions);
+        		List<Runnable> runners = Ginkgo4jRunner.calculateWorkerThreads(chains, listener);
 
-        		List<Thread> workers = Ginkgo4jRunner.threadWrap(runners, notifier, descriptions);
-        		
-        		Ginkgo4jRunner.threadExecute(workers, Ginkgo4jRunner.getThreads(testClass), notifier, description);
+        		Ginkgo4jRunner.threadExecute(runners, Ginkgo4jRunner.getThreads(testClass));
             }
         };
     }
