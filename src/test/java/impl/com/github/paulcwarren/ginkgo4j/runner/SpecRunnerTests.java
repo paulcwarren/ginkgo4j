@@ -18,6 +18,7 @@ import org.mockito.InOrder;
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
+import impl.com.github.paulcwarren.ginkgo4j.Context;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
 
 @RunWith(Ginkgo4jRunner.class)
@@ -55,7 +56,7 @@ public class SpecRunnerTests {
 					this.setupOneBeforeOneAfterSpec();
 				});
 				
-				It("should call before each, the spec and then after each", () -> {
+				It("should call BeforeEach, It and then AfterEach", () -> {
 					InOrder order = inOrder(listener, before, it, after);
 					order.verify(listener).testStarted(eq("some id"));
 					order.verify(before).invoke();
@@ -67,20 +68,21 @@ public class SpecRunnerTests {
 				
 			});
 			
-			Context("when a before each throws an Exception", () -> {
+			Context("when a BeforeEach throws an Exception", () -> {
 
 				BeforeEach(() ->{
 					setupOneBeforeOneAfterSpec();
 					doThrow(Exception.class).when(before).invoke();
 				});
 				
-				It("should call before each but not the spec or afters", () -> {
+				It("should call AfterEach but not the It", () -> {
 					InOrder order = inOrder(listener, before, it, after);
 					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
+					order.verify(after).invoke();
 					order.verify(listener).testException(eq("some id"), isA(Exception.class));
 					order.verify(listener).testFinished("some id");
-					verifyNoMoreInteractions(listener, before, it, after);
+					verifyNoMoreInteractions(listener, before, it);
 				});
 				
 			});
@@ -90,11 +92,12 @@ public class SpecRunnerTests {
 				BeforeEach(() ->{
 					setupOneBeforeOneAfterSpec();
 					justBefore = mock(ExecutableBlock.class);
-					chain.getJustBeforeEachs().add(justBefore);
+					chain.getContext().add(new Context(""));
+					chain.getContext().get(0).setJustBeforeEach(justBefore);
 					doThrow(Exception.class).when(justBefore).invoke();
 				});
 
-				It("should call Before, JustBefore and After", () -> {
+				It("should call BeforeEach, JustBeforeEach and AfterEach", () -> {
 					InOrder order = inOrder(listener, before, justBefore, after);
 					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
@@ -107,7 +110,7 @@ public class SpecRunnerTests {
 
 			});
 
-			Context("when an it throws an Exception", () -> {
+			Context("when an It throws an Exception", () -> {
 
 				BeforeEach(() ->{
 					setupOneBeforeOneAfterSpec();
@@ -127,14 +130,14 @@ public class SpecRunnerTests {
 			});
 
 
-			Context("when an after throws an Exception", () -> {
+			Context("when an AfterEach throws an Exception", () -> {
 
 				BeforeEach(() ->{
 					setupOneBeforeOneAfterSpec();
 					doThrow(Exception.class).when(after).invoke();
 				});
 				
-				It("should call before each but not the spec or afters", () -> {
+				It("should call the BeforeEach, the It and the AfterEach", () -> {
 					InOrder order = inOrder(listener, before, it, after);
 					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
@@ -147,15 +150,16 @@ public class SpecRunnerTests {
 				
 			});
 			
-			Context("when a spec has a JustBeforeEach", () -> {
+			Context("when a It has a JustBeforeEach", () -> {
 
 				BeforeEach(() ->{
 					this.setupOneBeforeOneAfterSpec();
 					justBefore = mock(ExecutableBlock.class);
-					chain.getJustBeforeEachs().add(justBefore);
+					chain.getContext().add(new Context(""));
+					chain.getContext().get(0).setJustBeforeEach(justBefore);
 				});
 				
-				It("should run after all Before's", () -> {
+				It("should run after all BeforeEach's", () -> {
 					InOrder order = inOrder(listener, before, justBefore, it, after);
 					order.verify(listener).testStarted("some id");
 					order.verify(before).invoke();
@@ -165,22 +169,21 @@ public class SpecRunnerTests {
 					order.verify(listener).testFinished("some id");
 					verifyNoMoreInteractions(listener, before, justBefore, it, after);
 				});
-				
 			});
-			
 		});
-			
 	}
 
 	protected void setupOneBeforeOneAfterSpec() {
+		chain.getContext().add(new Context(""));
+		
 		before = mock(ExecutableBlock.class);
-		chain.getBeforeEachs().add(before);
+		chain.getContext().get(0).setBeforeEach(before);
 
 		it = mock(ExecutableBlock.class);
 		chain.setSpec(it);
 		
 		after = mock(ExecutableBlock.class);
-		chain.getAfterEachs().add(after);
+		chain.getContext().get(0).setAfterEach(after);
 	}
 
 }

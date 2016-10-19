@@ -5,11 +5,15 @@ import java.util.List;
 
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
+import impl.com.github.paulcwarren.ginkgo4j.Context;
+
 public class ExecutableChain {
 	
 	private String id;
 	private Object testObject;
 	private boolean isFocused;
+
+	private List<Context> context = new ArrayList<>();
 	
 	public ExecutableChain(String id) {
 		this.id = id;
@@ -31,25 +35,17 @@ public class ExecutableChain {
 	public void setTestObject(Object testObject) {
 		this.testObject = testObject;
 	}
+	
+	public List<Context> getContext() {
+		return this.context;
+	}
 
-	public List<ExecutableBlock> getBeforeEachs() {
-		return beforeEachs;
-	}
-	
-	public List<ExecutableBlock> getJustBeforeEachs() {
-		return justBeforeEachs;
-	}
-	
 	public ExecutableBlock getSpec() {
 		return specBlock;
 	}
 	
 	public void setSpec(ExecutableBlock spec) {
 		this.specBlock = spec;
-	}
-	
-	public List<ExecutableBlock> getAfterEachs() {
-		return afterEachs;
 	}
 	
 	public boolean isFocused() {
@@ -62,18 +58,41 @@ public class ExecutableChain {
 	
 	public void execute() throws Exception {
 
-		for (ExecutableBlock block : this.getBeforeEachs()) {
-			block.invoke();
+		for (Context c : context) {
+			try {
+				if (c.getBeforeEach() != null) {
+					c.getBeforeEach().invoke();
+				}
+			} catch (Exception e) {
+				if (c.getAfterEach() != null) {
+					c.getAfterEach().invoke();
+				}
+				throw e;
+			}
+		};
+		
+		for (Context c : context) {
+			try {
+				if (c.getJustBeforeEach() != null) {
+					c.getJustBeforeEach().invoke();
+				}
+			} catch (Exception e) {
+				if (c.getAfterEach() != null) {
+					c.getAfterEach().invoke();
+				}
+				throw e;
+			}
+		};
+		
+		try {
+			this.getSpec().invoke();
+		} finally {
+			for (int i = context.size() - 1; i >= 0; i--) {
+				ExecutableBlock block = context.get(i).getAfterEach();
+				if (block != null) {
+					block.invoke();
+				}
+			}
 		}
-	
-		for (ExecutableBlock block : this.getJustBeforeEachs()) {
-			block.invoke();
-		}
-	
-		this.getSpec().invoke();
-
-		for (ExecutableBlock block : this.getAfterEachs()) {
-			block.invoke();
-    	}
 	}
 }

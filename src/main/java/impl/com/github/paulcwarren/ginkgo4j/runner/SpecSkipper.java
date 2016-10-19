@@ -11,7 +11,7 @@ public class SpecSkipper implements Runner {
 		this.chain = chain;
 		this.listener = new RunnerListener() {
 			@Override public void testStarted(String specId) {}
-			@Override public void testException(String specId, Exception e) {}
+			@Override public void testException(String specId, Throwable t) {}
 			@Override public void testFinished(String specId) {}
 			@Override public void testSkipped(String specId) {}
 		};

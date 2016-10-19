@@ -1,10 +1,8 @@
 package impl.com.github.paulcwarren.ginkgo4j;
 
-import org.junit.runners.model.Statement;
-
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
-public class Spec extends Statement {
+public class Spec {
 
 	private String id;
 	
@@ -34,11 +32,6 @@ public class Spec extends Statement {
 	
 	public ExecutableBlock getExecutableBlock() {
 		return block;
-	}
-
-	@Override
-	public void evaluate() throws Throwable {
-		this.getExecutableBlock().invoke();
 	}
 
 	@Override

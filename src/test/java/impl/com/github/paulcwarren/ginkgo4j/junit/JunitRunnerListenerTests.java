@@ -60,7 +60,7 @@ public class JunitRunnerListenerTests {
 				});
 			});
 
-			Context("when listening to a failing test", () -> {
+			Context("when listening to a test that violates assumption", () -> {
 				BeforeEach(() -> {
 					listener.testException("some id", new AssumptionViolatedException(""));
 				});
@@ -72,7 +72,7 @@ public class JunitRunnerListenerTests {
 				});
 			});
 
-			Context("when listening to an erroring test", () -> {
+			Context("when listening to a test that throws an Exception", () -> {
 				BeforeEach(() -> {
 					listener.testException("some id", new IllegalStateException(""));
 				});
@@ -84,6 +84,30 @@ public class JunitRunnerListenerTests {
 				});
 			});
 
+			Context("when listening to a test that throws an Error", () -> {
+				BeforeEach(() -> {
+					listener.testException("some id", new Error(""));
+				});
+				
+				It("should notify junit", () -> {
+					InOrder order = inOrder(notifier);
+					order.verify(notifier).fireTestFailure(isA(Failure.class));
+					verifyNoMoreInteractions(notifier);
+				});
+			});
+			
+			Context("when listening to a test that throws a Throwable", () -> {
+				BeforeEach(() -> {
+					listener.testException("some id", new Throwable(""));
+				});
+				
+				It("should notify junit", () -> {
+					InOrder order = inOrder(notifier);
+					order.verify(notifier).fireTestFailure(isA(Failure.class));
+					verifyNoMoreInteractions(notifier);
+				});
+			});
+			
 			Context("when listening to a finishing test", () -> {
 				BeforeEach(() -> {
 					listener.testFinished("some id");

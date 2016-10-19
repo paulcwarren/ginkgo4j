@@ -46,10 +46,11 @@ public class ExecutableChainBuilderTests {
 				});
 
 				It("should capture the test", () -> {
-					assertThat(bldr.getExecutableChain().getBeforeEachs().size(), is(1));
-					assertThat(bldr.getExecutableChain().getJustBeforeEachs().size(), is(1));
+					assertThat(bldr.getExecutableChain().getContext().size(), is(1));
+					assertThat(bldr.getExecutableChain().getContext().get(0).getBeforeEach(), is(not(nullValue())));
+					assertThat(bldr.getExecutableChain().getContext().get(0).getJustBeforeEach(), is(not(nullValue())));
 					assertThat(bldr.getExecutableChain().getSpec(), is(not(nullValue())));
-					assertThat(bldr.getExecutableChain().getAfterEachs().size(), is(1));
+					assertThat(bldr.getExecutableChain().getContext().get(0).getAfterEach(), is(not(nullValue())));
 				});
 			});
 
@@ -67,9 +68,8 @@ public class ExecutableChainBuilderTests {
 				});
 
 				It("should ignore the describe", () -> {
-					assertThat(bldr.getExecutableChain().getBeforeEachs().size(), is(0));
+					assertThat(bldr.getExecutableChain().getContext().size(), is(0));
 					assertThat(bldr.getExecutableChain().getSpec(), is(nullValue()));
-					assertThat(bldr.getExecutableChain().getAfterEachs().size(), is(0));
 				});
 			});
 

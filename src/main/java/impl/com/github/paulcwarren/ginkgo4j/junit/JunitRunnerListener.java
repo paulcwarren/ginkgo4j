@@ -26,11 +26,11 @@ public class JunitRunnerListener implements RunnerListener {
 	}
 
 	@Override
-	public void testException(String specId, Exception e) {
-		if (e instanceof AssumptionViolatedException) {
-			notifier.fireTestAssumptionFailed(new Failure(descriptions.get(specId), e));
+	public void testException(String specId, Throwable t) {
+		if (t instanceof AssumptionViolatedException) {
+			notifier.fireTestAssumptionFailed(new Failure(descriptions.get(specId), t));
 		} else {
-			notifier.fireTestFailure(new Failure(descriptions.get(specId), e));
+			notifier.fireTestFailure(new Failure(descriptions.get(specId), t));
 		}
 	}
 
