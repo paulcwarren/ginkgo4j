@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.com.github.paulcwarren.ginkgo4j.builder.TestWalker;
 import impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
 
 @RunWith(Ginkgo4jRunner.class)
@@ -31,25 +30,74 @@ public class DescriptionsCollectorTests {
 	private Description description;
 	{
 		Describe("Descriptions Collector", () -> {
-			BeforeEach(() -> {
-				description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
-				collector = new JunitDescriptionsCollector(description);
-				walker = new TestWalker(TestClass.class);
+			JustBeforeEach(() -> {
 				walker.walk(collector);
 			});
-			It("should collect all descriptions into a tree structure under the root description", () -> {
-				assertThat(description.getChildren().size(), is(1));
-				assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
-				assertThat(description.getChildren().get(0).getChildren().size(), is(1));
-				assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
-				assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-				assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+			Context("given a test class with a conventional Describe->Context->It structure", () -> {
+				BeforeEach(() -> {
+					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
+					collector = new JunitDescriptionsCollector(description);
+					walker = new TestWalker(TestClass.class);
+				});
+				It("should collect all descriptions into a tree structure under the root description", () -> {
+					assertThat(description.getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
+					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+				});
+				It("should collect all descriptions into a quick access map", () -> {
+					assertThat(collector.getDescriptions(), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context.should do something"), is(not(nullValue())));
+				});
 			});
-			It("should collect all descriptions into a quick access map", () -> {
-				assertThat(collector.getDescriptions(), is(not(nullValue())));
-				assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
-				assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
-				assertThat(collector.getDescriptions().get("Test Class.A context.should do something"), is(not(nullValue())));
+			Context("given a test class with a top-level Context", () -> {
+				BeforeEach(() -> {
+					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
+					collector = new JunitDescriptionsCollector(description);
+					walker = new TestWalker(TestClass.class);
+				});
+				It("should collect all descriptions into a tree structure under the root description", () -> {
+					assertThat(description.getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
+					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+				});
+				It("should collect all descriptions into a quick access map", () -> {
+					assertThat(collector.getDescriptions(), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context.should do something"), is(not(nullValue())));
+				});
+			});
+			Context("given a test class with a nested Describe", () -> {
+				BeforeEach(() -> {
+					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
+					collector = new JunitDescriptionsCollector(description);
+					walker = new TestWalker(NestedDescribeTestClass.class);
+				});
+				It("should collect all descriptions into a tree structure under the root description", () -> {
+					assertThat(description.getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
+					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("A nested describe"));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+				});
+				It("should collect all descriptions into a quick access map", () -> {
+					assertThat(collector.getDescriptions(), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context.A nested describe"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("Test Class.A context.A nested describe.should do something"), is(not(nullValue())));
+				});
 			});
 		});
 	}
@@ -62,6 +110,38 @@ public class DescriptionsCollectorTests {
 				BeforeEach(() -> {
 				});
 				It("should do something", () -> {
+				});
+			});
+			AfterEach(() -> {
+			});
+		});
+	}}
+
+	static class TopLevelContextTestClass {{
+		Context("Test Class", () -> {
+			JustBeforeEach(() -> {
+			});
+			Describe("A context", () -> {
+				BeforeEach(() -> {
+				});
+				It("should do something", () -> {
+				});
+			});
+			AfterEach(() -> {
+			});
+		});
+	}}
+
+	static class NestedDescribeTestClass {{
+		Describe("Test Class", () -> {
+			JustBeforeEach(() -> {
+			});
+			Context("A context", () -> {
+				BeforeEach(() -> {
+				});
+				Describe("A nested describe", () -> {
+					It("should do something", () -> {
+					});
 				});
 			});
 			AfterEach(() -> {

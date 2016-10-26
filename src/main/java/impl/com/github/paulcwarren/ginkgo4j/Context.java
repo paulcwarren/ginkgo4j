@@ -14,6 +14,10 @@ public class Context {
 		this.id = id;
 	}
 	
+	public Object getId() {
+		return this.id;
+	}
+	
 	public void setBeforeEach(ExecutableBlock be) {
 		this.be = be;
 	}

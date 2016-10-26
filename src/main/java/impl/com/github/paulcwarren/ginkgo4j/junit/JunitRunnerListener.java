@@ -22,25 +22,35 @@ public class JunitRunnerListener implements RunnerListener {
 
 	@Override
 	public void testStarted(String specId) {
-		notifier.fireTestStarted(descriptions.get(specId));
+		synchronized (notifier) {
+			notifier.fireTestStarted(descriptions.get(specId));
+		}
 	}
 
 	@Override
 	public void testException(String specId, Throwable t) {
 		if (t instanceof AssumptionViolatedException) {
-			notifier.fireTestAssumptionFailed(new Failure(descriptions.get(specId), t));
+			synchronized (notifier) {
+				notifier.fireTestAssumptionFailed(new Failure(descriptions.get(specId), t));
+			}
 		} else {
-			notifier.fireTestFailure(new Failure(descriptions.get(specId), t));
+			synchronized (notifier) {
+				notifier.fireTestFailure(new Failure(descriptions.get(specId), t));
+			}
 		}
 	}
 
 	@Override
 	public void testFinished(String specId) {
-		notifier.fireTestFinished(descriptions.get(specId));
+		synchronized (notifier) {
+			notifier.fireTestFinished(descriptions.get(specId));
+		}
 	}
 
 	@Override
 	public void testSkipped(String specId) {
-		notifier.fireTestIgnored(descriptions.get(specId));
+		synchronized (notifier) {
+			notifier.fireTestIgnored(descriptions.get(specId));
+		}
 	}
 }

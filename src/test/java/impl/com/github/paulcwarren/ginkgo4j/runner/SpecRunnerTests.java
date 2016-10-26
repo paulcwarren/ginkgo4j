@@ -19,6 +19,7 @@ import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
 import impl.com.github.paulcwarren.ginkgo4j.Context;
+import impl.com.github.paulcwarren.ginkgo4j.Describe;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
 
 @RunWith(Ginkgo4jRunner.class)
@@ -168,6 +169,33 @@ public class SpecRunnerTests {
 					order.verify(after).invoke();
 					order.verify(listener).testFinished("some id");
 					verifyNoMoreInteractions(listener, before, justBefore, it, after);
+				});
+			});
+			
+			Context("when a Context has a Describe", () -> {
+
+				BeforeEach(() ->{
+					chain.getContext().add(new Context("parent"));
+					chain.getContext().add(new Describe("child"));
+					
+					justBefore = mock(ExecutableBlock.class);
+					chain.getContext().get(0).setJustBeforeEach(justBefore);
+
+					before = mock(ExecutableBlock.class);
+					chain.getContext().get(1).setBeforeEach(before);
+
+					it = mock(ExecutableBlock.class);
+					chain.setSpec(it);
+				});
+				
+				It("should run after all BeforeEach's", () -> {
+					InOrder order = inOrder(listener, before, justBefore, it);
+					order.verify(listener).testStarted("some id");
+					order.verify(before).invoke();
+					order.verify(justBefore).invoke();
+					order.verify(it).invoke();
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, justBefore, it);
 				});
 			});
 		});

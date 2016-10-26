@@ -29,8 +29,12 @@ public class JunitDescriptionsCollector implements TestVisitor {
 	public void describe(String text, ExecutableBlock block, boolean isFocused) {
 		String id = this.getId(text);
 		Description desc = Description.createSuiteDescription(text, id, (Annotation[])null);
-		description.addChild(desc);
 		descriptions.put(id, desc);
+		if (context.isEmpty()) {
+			description.addChild(desc);
+		} else  {
+			safePeek(desc);
+		}
 		context.push(desc);
 		try {
 			block.invoke();
@@ -44,7 +48,11 @@ public class JunitDescriptionsCollector implements TestVisitor {
 		String id = this.getId(text);
 		Description childDesc = Description.createSuiteDescription(text, id, (Annotation[])null);
 		descriptions.put(id, childDesc);
-		safePeek(childDesc);
+		if (context.isEmpty()) {
+			description.addChild(childDesc);
+		} else  {
+			safePeek(childDesc);
+		}
 		context.push(childDesc);
 		try {
 			block.invoke();

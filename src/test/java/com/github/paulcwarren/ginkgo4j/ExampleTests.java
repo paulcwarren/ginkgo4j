@@ -10,10 +10,9 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
-import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
-
 @Ignore
 @RunWith(Ginkgo4jRunner.class)
+//@Ginkgo4jConfiguration(threads=1)
 public class ExampleTests {
 	
 	private Example example;
@@ -73,7 +72,11 @@ public class ExampleTests {
 		});
 		
 		Describe("A 2nd describe", () -> {
-			
+
+			BeforeEach(() -> {
+				example = new Example();
+			});
+
 			It("should pass", () -> {
 				Thread.sleep(1000);
 				Assert.assertTrue(true);
@@ -84,6 +87,18 @@ public class ExampleTests {
 				throw new Exception("this test threw an unexpected exception");
 			});
 		});
-	}
+		
+		Context("parent context", () -> {
 
+			BeforeEach(() -> {
+				example = new Example();
+			});
+
+			Describe("child context", () -> {
+				It("it", () -> {
+					Assert.assertTrue(true);
+				});
+			});
+		});
+	}
 }

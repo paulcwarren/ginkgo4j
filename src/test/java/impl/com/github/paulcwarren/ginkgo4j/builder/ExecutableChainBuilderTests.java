@@ -6,6 +6,7 @@ import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -18,6 +19,8 @@ import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
+import impl.com.github.paulcwarren.ginkgo4j.Context;
+import impl.com.github.paulcwarren.ginkgo4j.Describe;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChainBuilder;
 
 @RunWith(Ginkgo4jRunner.class)
@@ -31,7 +34,7 @@ public class ExecutableChainBuilderTests {
 	{
 		Describe("ExecutableChainBuilder Tests", () -> {
 			
-			Context("when a describe block is invoked", () -> {
+			Context("when a Describe is invoked", () -> {
 
 				BeforeEach(() -> {
 					bldr = new ExecutableChainBuilder("describe.does something");
@@ -45,7 +48,7 @@ public class ExecutableChainBuilderTests {
 					Ginkgo4jDSL.unsetVisitor(bldr);
 				});
 
-				It("should capture the test", () -> {
+				It("should capture the test structure", () -> {
 					assertThat(bldr.getExecutableChain().getContext().size(), is(1));
 					assertThat(bldr.getExecutableChain().getContext().get(0).getBeforeEach(), is(not(nullValue())));
 					assertThat(bldr.getExecutableChain().getContext().get(0).getJustBeforeEach(), is(not(nullValue())));
@@ -54,7 +57,7 @@ public class ExecutableChainBuilderTests {
 				});
 			});
 
-			Context("when a describe block not matching the 'it' filter is invoked", () -> {
+			Context("when a Describe not matching the 'it' filter is invoked", () -> {
 
 				BeforeEach(() -> {
 					bldr = new ExecutableChainBuilder("describe.does something");
@@ -67,13 +70,13 @@ public class ExecutableChainBuilderTests {
 					Ginkgo4jDSL.unsetVisitor(bldr);
 				});
 
-				It("should ignore the describe", () -> {
+				It("should ignore the Describe", () -> {
 					assertThat(bldr.getExecutableChain().getContext().size(), is(0));
 					assertThat(bldr.getExecutableChain().getSpec(), is(nullValue()));
 				});
 			});
 
-			Context("when a describe block has two similar Describes", () -> {
+			Context("when a Describe has two similar Describes", () -> {
 
 				BeforeEach(() -> {
 					bldr = new ExecutableChainBuilder("describe something similar.context.it");
@@ -96,7 +99,7 @@ public class ExecutableChainBuilderTests {
 				});
 			});
 
-			Context("when a describe block has two similar Contexts", () -> {
+			Context("when a Describe has two similar Contexts", () -> {
 
 				BeforeEach(() -> {
 					bldr = new ExecutableChainBuilder("describe.does something similar.it");
@@ -117,7 +120,7 @@ public class ExecutableChainBuilderTests {
 				});
 			});
 
-			Context("when a describe block has two similar Its", () -> {
+			Context("when a Describe has two similar Its", () -> {
 
 				BeforeEach(() -> {
 					bldr = new ExecutableChainBuilder("describe.does something similar");
@@ -131,6 +134,56 @@ public class ExecutableChainBuilderTests {
 
 				It("should capture the correct It", () -> {
 					assertThat(bldr.getExecutableChain().getSpec(), is(it2));
+				});
+			});
+
+			Context("when a top-level Context has a Describe block", () -> {
+
+				BeforeEach(() -> {
+					bldr = new ExecutableChainBuilder("context.has a describe.it");
+					Ginkgo4jDSL.setVisitor(bldr);
+					Ginkgo4jDSL.Context("context", () -> {
+						Describe("has a describe", () -> {
+							It("it", it1);
+						});
+					});
+					Ginkgo4jDSL.unsetVisitor(bldr);
+				});
+
+				It("should capture the correct It", () -> {
+					assertThat(bldr.getExecutableChain().getContext().size(), is(2));
+					assertThat(bldr.getExecutableChain().getContext().get(0), instanceOf(Context.class));
+					assertThat(bldr.getExecutableChain().getContext().get(0).getId(), is("context")); 
+					assertThat(bldr.getExecutableChain().getContext().get(1), instanceOf(Describe.class));
+					assertThat(bldr.getExecutableChain().getContext().get(1).getId(), is("has a describe")); 
+					assertThat(bldr.getExecutableChain().getSpec(), is(it1));
+				});
+			});
+
+			Context("when a Describe has a Context has a Describe block", () -> {
+
+				BeforeEach(() -> {
+					bldr = new ExecutableChainBuilder("a describe.has a context.has a describe.it");
+					Ginkgo4jDSL.setVisitor(bldr);
+					Ginkgo4jDSL.Describe("a describe", () -> {
+						Ginkgo4jDSL.Context("has a context", () -> {
+							Describe("has a describe", () -> {
+								It("it", it1);
+							});
+						});
+					});
+					Ginkgo4jDSL.unsetVisitor(bldr);
+				});
+
+				It("should capture the correct It", () -> {
+					assertThat(bldr.getExecutableChain().getContext().size(), is(3));
+					assertThat(bldr.getExecutableChain().getContext().get(0), instanceOf(Describe.class)); 
+					assertThat(bldr.getExecutableChain().getContext().get(0).getId(), is("a describe")); 
+					assertThat(bldr.getExecutableChain().getContext().get(1), instanceOf(Context.class));
+					assertThat(bldr.getExecutableChain().getContext().get(1).getId(), is("has a context")); 
+					assertThat(bldr.getExecutableChain().getContext().get(2), instanceOf(Describe.class));
+					assertThat(bldr.getExecutableChain().getContext().get(2).getId(), is("has a describe")); 
+					assertThat(bldr.getExecutableChain().getSpec(), is(it1));
 				});
 			});
 
