@@ -31,10 +31,8 @@ public class SpecRunner implements Runner {
 		listener.testStarted(this.getChain().getId());
 		try {
 			chain.execute();
-		} catch (Exception e) {
-			listener.testException(this.getChain().getId(), e);
-		} catch (Error err) {
-			listener.testException(this.getChain().getId(), err);
+		} catch (Throwable t) {
+			listener.testException(this.getChain().getId(), t);
 		} finally {
 			listener.testFinished(this.getChain().getId());
 		}

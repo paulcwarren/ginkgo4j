@@ -46,9 +46,7 @@ public class SpecRunnerTests {
 
 			JustBeforeEach(() -> {
 				runner = new SpecRunner(chain, listener);
-				try {
-					runner.run();
-				} catch (Exception e) {}
+				runner.run();
 			});
 			
 			Context("when run with a simple passing spec", () -> {
@@ -88,6 +86,25 @@ public class SpecRunnerTests {
 				
 			});
 
+			Context("when a BeforeEach throws a Throwable", () -> {
+
+				BeforeEach(() ->{
+					setupOneBeforeOneAfterSpec();
+					doThrow(Throwable.class).when(before).invoke();
+				});
+				
+				It("should call AfterEach but not the It", () -> {
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
+					order.verify(before).invoke();
+					order.verify(after).invoke();
+					order.verify(listener).testException(eq("some id"), isA(Throwable.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it);
+				});
+				
+			});
+
 			Context("when a JustBeforeEach throws an Exception", () -> {
 
 				BeforeEach(() ->{
@@ -95,6 +112,7 @@ public class SpecRunnerTests {
 					justBefore = mock(ExecutableBlock.class);
 					chain.getContext().add(new Context(""));
 					chain.getContext().get(0).setJustBeforeEach(justBefore);
+					
 					doThrow(Exception.class).when(justBefore).invoke();
 				});
 
@@ -105,6 +123,30 @@ public class SpecRunnerTests {
 					order.verify(justBefore).invoke();
 					order.verify(after).invoke();
 					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, justBefore, after);
+				});
+
+			});
+
+			Context("when a JustBeforeEach throws a Throwable", () -> {
+
+				BeforeEach(() ->{
+					setupOneBeforeOneAfterSpec();
+					justBefore = mock(ExecutableBlock.class);
+					chain.getContext().add(new Context(""));
+					chain.getContext().get(0).setJustBeforeEach(justBefore);
+					
+					doThrow(Throwable.class).when(justBefore).invoke();
+				});
+
+				It("should call BeforeEach, JustBeforeEach and AfterEach", () -> {
+					InOrder order = inOrder(listener, before, justBefore, after);
+					order.verify(listener).testStarted("some id");
+					order.verify(before).invoke();
+					order.verify(justBefore).invoke();
+					order.verify(after).invoke();
+					order.verify(listener).testException(eq("some id"), isA(Throwable.class));
 					order.verify(listener).testFinished("some id");
 					verifyNoMoreInteractions(listener, before, justBefore, after);
 				});
@@ -130,6 +172,24 @@ public class SpecRunnerTests {
 				});
 			});
 
+			Context("when an It throws a Throwable", () -> {
+
+				BeforeEach(() ->{
+					setupOneBeforeOneAfterSpec();
+					doThrow(Throwable.class).when(it).invoke();
+				});
+				
+				It("it should still call AfterEach after the spec", () -> {
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
+					order.verify(before).invoke();
+					order.verify(it).invoke();
+					order.verify(after).invoke();
+					order.verify(listener).testException(eq("some id"), isA(Throwable.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it, after);
+				});
+			});
 
 			Context("when an AfterEach throws an Exception", () -> {
 
@@ -145,6 +205,26 @@ public class SpecRunnerTests {
 					order.verify(it).invoke();
 					order.verify(after).invoke();
 					order.verify(listener).testException(eq("some id"), isA(Exception.class));
+					order.verify(listener).testFinished("some id");
+					verifyNoMoreInteractions(listener, before, it, after);
+				});
+				
+			});
+			
+			Context("when an AfterEach throws a Throwable", () -> {
+
+				BeforeEach(() ->{
+					setupOneBeforeOneAfterSpec();
+					doThrow(Throwable.class).when(after).invoke();
+				});
+				
+				It("should call the BeforeEach, the It and the AfterEach", () -> {
+					InOrder order = inOrder(listener, before, it, after);
+					order.verify(listener).testStarted("some id");
+					order.verify(before).invoke();
+					order.verify(it).invoke();
+					order.verify(after).invoke();
+					order.verify(listener).testException(eq("some id"), isA(Throwable.class));
 					order.verify(listener).testFinished("some id");
 					verifyNoMoreInteractions(listener, before, it, after);
 				});

@@ -63,11 +63,11 @@ public class ExecutableChain {
 				if (c.getBeforeEach() != null) {
 					c.getBeforeEach().invoke();
 				}
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				if (c.getAfterEach() != null) {
 					c.getAfterEach().invoke();
 				}
-				throw e;
+				throw t;
 			}
 		};
 		
@@ -76,11 +76,11 @@ public class ExecutableChain {
 				if (c.getJustBeforeEach() != null) {
 					c.getJustBeforeEach().invoke();
 				}
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				if (c.getAfterEach() != null) {
 					c.getAfterEach().invoke();
 				}
-				throw e;
+				throw t;
 			}
 		};
 		
