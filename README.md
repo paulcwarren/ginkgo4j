@@ -10,6 +10,7 @@ Feature List:-
   - BeforeEach and AfterEach blocks for setup and teardown
   - It blocks that hold your assertions
   - JustBeforeEach blocks that separate creation from configuration (also known as the subject action pattern).
+- Fast testing with parallel execution
 
 - Test runners that lets you:
   - Focus tests through FDescribe, FContext and FIt constructs
@@ -25,14 +26,14 @@ Feature List:-
 <dependency>
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <scope>test</scope>
 </dependency>
 ```
 or for a Gradle project add:-
-`compile 'com.github.paulcwarren:ginkgo4j:1.0.5'`
+`compile 'com.github.paulcwarren:ginkgo4j:1.0.6'`
 
-for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.3%7Cjar).
+for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.6%7Cjar).
 
 - Create a junit test class
   - Add the following imports:-
