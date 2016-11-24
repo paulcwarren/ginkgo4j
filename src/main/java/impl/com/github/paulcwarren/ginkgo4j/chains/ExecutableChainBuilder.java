@@ -1,6 +1,5 @@
 package impl.com.github.paulcwarren.ginkgo4j.chains;
 
-import java.util.Stack;
 import java.util.regex.Pattern;
 
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
@@ -13,8 +12,6 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	private String filter;
 	private ExecutableChain chain;
-	
-	private Stack<Context> stack = new Stack<>();
 	
 	public ExecutableChainBuilder(String filter) {
 		this.filter = filter;
@@ -33,7 +30,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 			try {
 				chain.getContext().add(new Describe(text));
 				block.invoke();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			} 
 		}
@@ -47,7 +44,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 			try {
 				chain.getContext().add(new Context(text));
 				block.invoke();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}

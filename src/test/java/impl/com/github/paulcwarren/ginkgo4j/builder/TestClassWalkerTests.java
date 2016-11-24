@@ -19,9 +19,6 @@ import org.mockito.InOrder;
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor;
-import impl.com.github.paulcwarren.ginkgo4j.builder.TestWalker;
-
 @RunWith(Ginkgo4jRunner.class)
 public class TestClassWalkerTests  {
 
@@ -74,13 +71,13 @@ public class TestClassWalkerTests  {
 		public void describe(String text, ExecutableBlock block, boolean isFocused) {
 			try {
 				block.invoke();
-			} catch (Exception e) {}
+			} catch (Throwable e) {}
 		}
 		@Override
 		public void context(String text, ExecutableBlock block, boolean isFocused) {
 			try {
 				block.invoke();
-			} catch (Exception e) {}
+			} catch (Throwable e) {}
 		}
 		@Override
 		public void beforeEach(ExecutableBlock block) {

@@ -22,7 +22,7 @@ public class SpecsCollector implements TestVisitor {
 		context.push(text);
 		try {
 			block.invoke();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
 			context.pop();
@@ -33,7 +33,7 @@ public class SpecsCollector implements TestVisitor {
 		context.push(text);
 		try {
 			block.invoke();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
 			context.pop();

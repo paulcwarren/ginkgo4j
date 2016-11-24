@@ -19,10 +19,7 @@ public class ExecutableChain {
 		this.id = id;
 	}
 	
-	private List<ExecutableBlock> beforeEachs = new ArrayList<>();
-	private List<ExecutableBlock> justBeforeEachs = new ArrayList<>();
 	private ExecutableBlock specBlock = null;
-	private List<ExecutableBlock> afterEachs = new ArrayList<>();
 	
 	public String getId() {
 		return this.id;
@@ -56,7 +53,7 @@ public class ExecutableChain {
 		this.isFocused = isFocused;
 	}
 	
-	public void execute() throws Exception {
+	public void execute() throws Throwable {
 
 		for (Context c : context) {
 			try {

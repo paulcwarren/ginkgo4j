@@ -38,7 +38,7 @@ public class JunitDescriptionsCollector implements TestVisitor {
 		context.push(desc);
 		try {
 			block.invoke();
-		} catch (Exception e) {}
+		} catch (Throwable e) {}
 		finally {
 			context.pop();
 		}
@@ -56,7 +56,7 @@ public class JunitDescriptionsCollector implements TestVisitor {
 		context.push(childDesc);
 		try {
 			block.invoke();
-		} catch (Exception e) {}
+		} catch (Throwable e) {}
 		finally {
 			context.pop();
 		}

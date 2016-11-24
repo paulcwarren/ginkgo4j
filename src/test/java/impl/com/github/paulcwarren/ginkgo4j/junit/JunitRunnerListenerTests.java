@@ -22,8 +22,6 @@ import org.mockito.InOrder;
 
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.com.github.paulcwarren.ginkgo4j.runner.SpecRunner;
-
 @RunWith(Ginkgo4jRunner.class)
 public class JunitRunnerListenerTests {
 
@@ -33,13 +31,11 @@ public class JunitRunnerListenerTests {
 	// mocks
 	private RunNotifier notifier;
 	private Description description;
-	private SpecRunner runner;
 	
 	{
 		Describe("JunitRunnerListener", () -> {
 
 			BeforeEach(() -> {
-				runner = mock(SpecRunner.class);
 				notifier = mock(RunNotifier.class);
 				description = mock(Description.class);
 				Map<String,Description> descriptions = new HashMap<>();
