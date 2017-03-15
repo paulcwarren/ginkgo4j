@@ -32,7 +32,7 @@ public class ExecutableChainBuilderTests {
 	private It it2 = new It();
 	
 	{
-		Describe("ExecutableChainBuilder Tests", () -> {
+		Describe("ExecutableChainBuilder", () -> {
 			
 			Context("when a Describe is invoked", () -> {
 
@@ -237,6 +237,25 @@ public class ExecutableChainBuilderTests {
 
 					It("should capture the It", () -> {
 						assertThat(bldr.getExecutableChain().getSpec(), is(it1));
+					});
+				});
+				
+				Context("when a test class with empty labels is invoked", () -> {
+
+					BeforeEach(() -> {
+						bldr = new ExecutableChainBuilder("_EMPTY_._EMPTY_._EMPTY_");
+						Ginkgo4jDSL.setVisitor(bldr);
+						Ginkgo4jDSL.Describe("", () -> {
+							Context("", () -> {
+								It("", () -> {});
+							});
+						});
+						Ginkgo4jDSL.unsetVisitor(bldr);
+					});
+
+					It("should capture the test structure", () -> {
+						assertThat(bldr.getExecutableChain().getContext().size(), is(2));
+						assertThat(bldr.getExecutableChain().getSpec(), is(not(nullValue())));
 					});
 				});
 			});

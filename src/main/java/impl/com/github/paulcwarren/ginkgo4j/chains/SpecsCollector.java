@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
+import impl.com.github.paulcwarren.ginkgo4j.IdBuilder;
 import impl.com.github.paulcwarren.ginkgo4j.Spec;
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor;
 
@@ -19,6 +20,8 @@ public class SpecsCollector implements TestVisitor {
 	}
 	
 	public void describe(String text, ExecutableBlock block, boolean isFocused) {
+		text = IdBuilder.id(text);
+		
 		context.push(text);
 		try {
 			block.invoke();
@@ -30,6 +33,8 @@ public class SpecsCollector implements TestVisitor {
 	}
 	
 	public void context(String text, ExecutableBlock block, boolean isFocused) {
+		text = IdBuilder.id(text);
+		
 		context.push(text);
 		try {
 			block.invoke();
@@ -47,32 +52,16 @@ public class SpecsCollector implements TestVisitor {
 	}
 
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
-		Spec spec = new Spec(getId(text), block, isFocused);
+		String fqid = IdBuilder.fqid(text, context);
+		
+		Spec spec = new Spec(fqid, block, isFocused);
 		specs.add(spec);
 	}
 	
 	public void afterEach(ExecutableBlock block) {
 	}
 
-	String getId(String text) {
-		StringBuilder builder = new StringBuilder();
-		int i;
-		for (i=0; i < context.size(); i++) {
-			if (i > 0) {
-				builder.append(".");
-			}
-			builder.append(context.elementAt(i));
-		}
-		if (i > 0) {
-			builder.append(".");
-		}
-		builder.append(text);
-		return builder.toString();
-	}
-
 	@Override
 	public void test(Object test) {
-		// TODO Auto-generated method stub
-		
 	}
 }

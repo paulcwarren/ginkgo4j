@@ -134,6 +134,20 @@ public class Ginkgo4jRunnerTests {
 					assertThat(skipperThreads(workers), is(5));
 				});
 			});
+			Context("when called with an empty describe label", () -> {
+				BeforeEach(() -> {
+					runner = new Ginkgo4jRunner(EmptyDescribeClass.class);
+					runner.getDescription();
+				});
+				It("should return a SpecRunnerThread for all tests in the fitted describe", () -> {
+					List<ExecutableChain> chains = Ginkgo4jRunner.calculateExecutionChains(EmptyDescribeClass.class);
+					List<Runner> workers = Ginkgo4jRunner.calculateWorkerThreads(chains);
+
+					assertThat(workers, is(not(nullValue())));
+					assertThat(workers.size(), is(1));
+					assertThat(runnerThreads(workers), is(1));
+				});
+			});
 		});
 	}
 	
@@ -200,5 +214,11 @@ public class Ginkgo4jRunnerTests {
 			It("test4", () -> {});
 			It("test5", () -> {});
 		});
+	}}
+	
+	public static class EmptyDescribeClass {{
+		Describe("", () -> {
+		    It("stuff", () -> {});
+		}); 
 	}}
 }

@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.com.github.paulcwarren.ginkgo4j.builder.TestWalker;
 import impl.com.github.paulcwarren.ginkgo4j.chains.SpecsCollector;
 
 @RunWith(Ginkgo4jRunner.class)
@@ -56,6 +55,18 @@ public class SpecCollectorTests {
 					assertThat(collector.getSpecs().get(1).isFocused(), is(false));
 				});
 			});
+			
+			Context("when specs contain empty labels", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(EmptyLabelsTestClass.class);
+				});
+				
+				It("should collect specs with parsed IDs", () -> {
+					assertThat(collector.getSpecs(), is(not(nullValue())));
+					assertThat(collector.getSpecs().size(), is(1));
+					assertThat(collector.getSpecs().get(0).getId(), is("_EMPTY_._EMPTY_._EMPTY_"));
+				});
+			});
 		});
 	}
 	
@@ -74,7 +85,6 @@ public class SpecCollectorTests {
 		});
 	}}
 
-	
 	static class FItTestClass {{
 		Describe("Test Class", () -> {
 			JustBeforeEach(() -> {
@@ -85,6 +95,17 @@ public class SpecCollectorTests {
 				FIt("focussed", () -> {
 				});
 				It("not focussed", () -> {
+				});
+			});
+			AfterEach(() -> {
+			});
+		});
+	}}
+
+	static class EmptyLabelsTestClass {{
+		Describe("", () -> {
+			Context("", () -> {
+				It("", () -> {
 				});
 			});
 			AfterEach(() -> {

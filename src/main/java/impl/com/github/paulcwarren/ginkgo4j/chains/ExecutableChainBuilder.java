@@ -6,6 +6,7 @@ import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
 import impl.com.github.paulcwarren.ginkgo4j.Context;
 import impl.com.github.paulcwarren.ginkgo4j.Describe;
+import impl.com.github.paulcwarren.ginkgo4j.IdBuilder;
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor;
 
 public class ExecutableChainBuilder implements TestVisitor {
@@ -13,9 +14,9 @@ public class ExecutableChainBuilder implements TestVisitor {
 	private String filter;
 	private ExecutableChain chain;
 	
-	public ExecutableChainBuilder(String filter) {
-		this.filter = filter;
-		this.chain = new ExecutableChain(filter);
+	public ExecutableChainBuilder(String specId) {
+		this.filter = specId;
+		this.chain = new ExecutableChain(specId);
 	}
 	
 	public ExecutableChain getExecutableChain() {
@@ -24,6 +25,8 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void describe(String text, ExecutableBlock block, boolean isFocused) {
+		text = IdBuilder.id(text);
+		
 		if (filter.startsWith(text + ".")) {
 			filter = splitFilter(filter, text);
 			chain.setIsFocused(isFocused);
@@ -38,6 +41,8 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void context(String text, ExecutableBlock block, boolean isFocused) {
+		text = IdBuilder.id(text);
+		
 		if (filter.startsWith(text + ".")) {
 			filter = splitFilter(filter, text);
 			chain.setIsFocused(isFocused |= chain.isFocused());
@@ -52,18 +57,18 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void beforeEach(ExecutableBlock block) {
-//		chain.getBeforeEachs().add(block);
 		chain.getContext().get(chain.getContext().size() - 1).setBeforeEach(block);
 	}
 
 	@Override
 	public void justBeforeEach(ExecutableBlock block) {
-//		chain.getJustBeforeEachs().add(block);
 		chain.getContext().get(chain.getContext().size() - 1).setJustBeforeEach(block);
 	}
 
 	@Override
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
+		text = IdBuilder.id(text);
+
 		if (filter.equals(text)) {
 			filter = splitFilter(filter, text);
 			try {
@@ -77,7 +82,6 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void afterEach(ExecutableBlock block) {
-//		chain.getAfterEachs().add(0, block);
 		chain.getContext().get(chain.getContext().size() - 1).setAfterEach(block);
 	}
 

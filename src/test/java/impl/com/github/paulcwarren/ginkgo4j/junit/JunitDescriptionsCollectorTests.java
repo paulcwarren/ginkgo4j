@@ -1,4 +1,4 @@
-package impl.com.github.paulcwarren.ginkgo4j.builder;
+package impl.com.github.paulcwarren.ginkgo4j.junit;
 
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.AfterEach;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
@@ -19,17 +19,17 @@ import org.junit.runner.RunWith;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
-import impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollector;
+import impl.com.github.paulcwarren.ginkgo4j.builder.TestWalker;
 
 @RunWith(Ginkgo4jRunner.class)
 @Ginkgo4jConfiguration(threads=1)
-public class DescriptionsCollectorTests {
+public class JunitDescriptionsCollectorTests {
 	
 	private TestWalker walker;
 	private JunitDescriptionsCollector collector;
 	private Description description;
 	{
-		Describe("Descriptions Collector", () -> {
+		Describe("JunitDescriptionsCollector", () -> {
 			JustBeforeEach(() -> {
 				walker.walk(collector);
 			});
@@ -99,10 +99,31 @@ public class DescriptionsCollectorTests {
 					assertThat(collector.getDescriptions().get("Test Class.A context.A nested describe.should do something"), is(not(nullValue())));
 				});
 			});
+			Context("given a test class with empty labels", () -> {
+				BeforeEach(() -> {
+					description = Description.createSuiteDescription(EmptyLabelsTestClass.class.getName(), (Annotation[])null);
+					collector = new JunitDescriptionsCollector(description);
+					walker = new TestWalker(EmptyLabelsTestClass.class);
+				});
+				It("should use spaces for the description display names", () -> {
+					assertThat(description.getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getDisplayName(), is(" "));
+					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is(" "));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
+					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is(" (It)"));
+				});
+				It("should use a placeholder for the description fully-qualified IDs", () -> {
+					assertThat(collector.getDescriptions(), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("_EMPTY_"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("_EMPTY_._EMPTY_"), is(not(nullValue())));
+					assertThat(collector.getDescriptions().get("_EMPTY_._EMPTY_._EMPTY_"), is(not(nullValue())));
+				});
+			});
 		});
 	}
 	
-	static class TestClass {{
+	public static class TestClass {{
 		Describe("Test Class", () -> {
 			JustBeforeEach(() -> {
 			});
@@ -117,7 +138,7 @@ public class DescriptionsCollectorTests {
 		});
 	}}
 
-	static class TopLevelContextTestClass {{
+	public static class TopLevelContextTestClass {{
 		Context("Test Class", () -> {
 			JustBeforeEach(() -> {
 			});
@@ -132,7 +153,7 @@ public class DescriptionsCollectorTests {
 		});
 	}}
 
-	static class NestedDescribeTestClass {{
+	public static class NestedDescribeTestClass {{
 		Describe("Test Class", () -> {
 			JustBeforeEach(() -> {
 			});
@@ -145,6 +166,15 @@ public class DescriptionsCollectorTests {
 				});
 			});
 			AfterEach(() -> {
+			});
+		});
+	}}
+
+	public static class EmptyLabelsTestClass {{
+		Describe("", () -> {
+			Context("", () -> {
+				It("", () -> {
+				});
 			});
 		});
 	}}

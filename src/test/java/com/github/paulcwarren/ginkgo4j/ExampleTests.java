@@ -5,10 +5,13 @@ import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
+
+import junit.framework.Assert;
 
 @Ignore
 @RunWith(Ginkgo4jRunner.class)
@@ -18,6 +21,14 @@ public class ExampleTests {
 	private Example example;
 
 	{
+		Describe("", () -> {
+			Context("", () -> {
+				It("", () -> {
+					assertThat(true, is(true));
+				});
+			});
+		}); 		
+		
 		Describe("A describe", () -> {
 			
 			BeforeEach(() -> {
