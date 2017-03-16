@@ -1,5 +1,5 @@
 # Ginkgo4j
-##A Java BDD Testing Framework  (based on RSpec and [ginkgo](http://onsi.github.io/ginkgo/))
+## A Java BDD Testing Framework  (based on RSpec and [ginkgo](http://onsi.github.io/ginkgo/))
 [![Build Status](https://travis-ci.org/paulcwarren/ginkgo4j.svg?branch=master)](https://travis-ci.org/paulcwarren/ginkgo4j)
 
 Jump to the the [docs](https://paulcwarren.github.com/ginkgo4j) to see more.
