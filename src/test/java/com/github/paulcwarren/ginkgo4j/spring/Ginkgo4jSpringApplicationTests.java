@@ -16,6 +16,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 import com.github.paulcwarren.ginkgo4j.spring.Ginkgo4jSpringApplication.HelloService;
 
+@SuppressWarnings("deprecation")
 @RunWith(Ginkgo4jSpringRunner.class)
 @SpringApplicationConfiguration(classes = Ginkgo4jSpringApplication.class)
 public class Ginkgo4jSpringApplicationTests {

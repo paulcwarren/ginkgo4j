@@ -1,87 +1,138 @@
 package com.github.paulcwarren.ginkgo4j;
 
+import java.util.Stack;
+
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor; 
 
 public class Ginkgo4jDSL {
 
-	private static TestVisitor visitor = null;
+	private static Stack<TestVisitor> stack = new Stack<>();
 	
 	public static synchronized void setVisitor(TestVisitor b) {
-		visitor = b;
+		stack.push(b);
 	}
 
 	public static synchronized void unsetVisitor(TestVisitor b) {
-		if (b != visitor) {
+		if (b != stack.peek()) {
 			throw new IllegalStateException("Mismatched set/unset builder calls");
 		}
-		visitor = null;
+		stack.pop();
 	}
 
 	public static void Describe(String text, ExecutableBlock block) {
 		assertVisitor("Describe");
-		if (visitor != null) {
-			visitor.describe(text, block, false);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().describe(text, block, false);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
  	}
 
 	public static void FDescribe(String text, ExecutableBlock block) {
 		assertVisitor("FDescribe");
-		if (visitor != null) {
-			visitor.describe(text, block, true);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().describe(text, block, true);
+			} catch (Throwable e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
  	}
 
 	public static void Context(String text, ExecutableBlock block) {
 		assertVisitor("Context");
-		if (visitor != null) {
-			visitor.context(text, block, false);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().context(text, block, false);
+			} catch (Throwable e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
 	}
 
 	public static void FContext(String text, ExecutableBlock block) {
 		assertVisitor("FContext");
-		if (visitor != null) {
-			visitor.context(text, block, true);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().context(text, block, true);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
 	}
 
 	public static void BeforeEach(ExecutableBlock block) {
 		assertVisitor("BeforeEach");
-		if (visitor != null) {
-			visitor.beforeEach(block);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().beforeEach(block);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
 	}
 
 	public static void JustBeforeEach(ExecutableBlock block) {
 		assertVisitor("JustBeforeEach");
-		if (visitor != null) {
-			visitor.justBeforeEach(block);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().justBeforeEach(block);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
 	}
 
 	public static void It(String text, ExecutableBlock block) {
 		assertVisitor("It");
-		if (visitor != null) {
-			visitor.it(text, block, false);
+		if (stack.peek() != null) {
+			stack.peek().it(text, block, false);
 		}
 	}
 
 	public static void FIt(String text, ExecutableBlock block) {
 		assertVisitor("FIt");
-		if (visitor != null) {
-			visitor.it(text, block, true);
+		if (stack.peek() != null) {
+			stack.peek().it(text, block, true);
 		}
 	}
 
 	public static void AfterEach(ExecutableBlock block) {
 		assertVisitor("AfterEach");
-		if (visitor != null) {
-			visitor.afterEach(block);
+		if (stack.peek() != null) {
+			try {
+				stack.peek().afterEach(block);
+			} catch (Exception e) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException)e;
+				}
+				throw new RuntimeException("Unable to execute test", e);
+			}
 		}
 	}
 
 	private static void assertVisitor(String string) {
-		if (visitor == null) {
+		if (stack.peek() == null) {
 			throw new IllegalStateException(string);
 		}
 	}

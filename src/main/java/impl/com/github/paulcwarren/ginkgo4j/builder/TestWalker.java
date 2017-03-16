@@ -53,28 +53,28 @@ public class TestWalker implements TestVisitor {
 	}
 
 	@Override
-	public void describe(String text, ExecutableBlock block, boolean isFocused) {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) throws Exception {
 		for (TestVisitor visitor : visitors) {
 			visitor.describe(text, block, isFocused);
 		}
 	}
 
 	@Override
-	public void context(String text, ExecutableBlock block, boolean isFocused) {
+	public void context(String text, ExecutableBlock block, boolean isFocused) throws Exception {
 		for (TestVisitor visitor : visitors) {
 			visitor.context(text, block, isFocused);
 		}
 	}
 
 	@Override
-	public void beforeEach(ExecutableBlock block) {
+	public void beforeEach(ExecutableBlock block) throws Exception {
 		for (TestVisitor visitor : visitors) {
 			visitor.beforeEach(block);
 		}
 	}
 
 	@Override
-	public void justBeforeEach(ExecutableBlock block) {
+	public void justBeforeEach(ExecutableBlock block) throws Exception {
 		for (TestVisitor visitor : visitors) {
 			visitor.justBeforeEach(block);
 		}
@@ -88,7 +88,7 @@ public class TestWalker implements TestVisitor {
 	}
 
 	@Override
-	public void afterEach(ExecutableBlock block) {
+	public void afterEach(ExecutableBlock block) throws Exception {
 		for (TestVisitor visitor : visitors) {
 			visitor.afterEach(block);
 		}

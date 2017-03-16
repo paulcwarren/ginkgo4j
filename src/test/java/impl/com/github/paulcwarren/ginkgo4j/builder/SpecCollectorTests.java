@@ -7,6 +7,7 @@ import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Describe;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.FIt;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -25,6 +26,7 @@ public class SpecCollectorTests {
 	
 	private TestWalker walker;
 	private SpecsCollector collector;
+	private Throwable t;
 	{
 		Describe("Spec Collector", () -> {
 			BeforeEach(() -> {
@@ -33,7 +35,11 @@ public class SpecCollectorTests {
 			});
 			
 			JustBeforeEach(() -> {
-				walker.walk(collector);
+				try {
+					walker.walk(collector);
+				} catch (Throwable t) {
+					this.t = t;
+				}
 			});
 			
 			It("should collect all specs", () -> {
@@ -65,6 +71,56 @@ public class SpecCollectorTests {
 					assertThat(collector.getSpecs(), is(not(nullValue())));
 					assertThat(collector.getSpecs().size(), is(1));
 					assertThat(collector.getSpecs().get(0).getId(), is("_EMPTY_._EMPTY_._EMPTY_"));
+				});
+			});
+			
+			Context("when a describe throws an exception", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(ExceptionThrowingDescribeTestClass.class);
+				});
+				
+				It("should throw the exception", () -> {
+					assertThat(t, instanceOf(NullPointerException.class));
+				});
+			});
+			
+			Context("when a context throws an exception", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(ExceptionThrowingContextTestClass.class);
+				});
+				
+				It("should throw the exception", () -> {
+					assertThat(t, instanceOf(NullPointerException.class));
+				});
+			});
+			
+			Context("when a beforeeach throws an exception", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(ExceptionThrowingBeforeEachTestClass.class);
+				});
+				
+				It("should throw the exception", () -> {
+					assertThat(t, is(nullValue()));
+				});
+			});
+			
+			Context("when a justbeforeeach throws an exception", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(ExceptionThrowingJustBeforeEachTestClass.class);
+				});
+				
+				It("should not throw the exception", () -> {
+					assertThat(t, is(nullValue()));
+				});
+			});
+			
+			Context("when an aftereach throws an exception", () -> {
+				BeforeEach(() -> {
+					walker = new TestWalker(ExceptionThrowingAfterEachTestClass.class);
+				});
+				
+				It("should not throw the exception", () -> {
+					assertThat(t, is(nullValue()));
 				});
 			});
 		});
@@ -112,4 +168,75 @@ public class SpecCollectorTests {
 			});
 		});
 	}}
+
+	static class ExceptionThrowingDescribeTestClass {
+		private String something;
+		{
+			Describe("A describe", () -> {
+				something.length();
+				Context("A context", () -> {
+					It("A test", () -> {
+					});
+				});
+			});
+		}
+	}
+
+	static class ExceptionThrowingContextTestClass {
+		private String something;
+		{
+			Describe("A describe", () -> {
+				Context("A context", () -> {
+					something.length();
+					It("A test", () -> {
+					});
+				});
+			});
+		}
+	}
+
+	static class ExceptionThrowingBeforeEachTestClass {
+		private String something;
+		{
+			Describe("A describe", () -> {
+				BeforeEach(() -> {
+					something.length();
+				});
+				Context("A context", () -> {
+					It("A test", () -> {
+					});
+				});
+			});
+		}
+	}
+
+	static class ExceptionThrowingJustBeforeEachTestClass {
+		private String something;
+		{
+			Describe("A describe", () -> {
+				JustBeforeEach(() -> {
+					something.length();
+				});
+				Context("A context", () -> {
+					It("A test", () -> {
+					});
+				});
+			});
+		}
+	}
+
+	static class ExceptionThrowingAfterEachTestClass {
+		private String something;
+		{
+			Describe("A describe", () -> {
+				Context("A context", () -> {
+					It("A test", () -> {
+					});
+				});
+				AfterEach(() -> {
+					something.length();
+				});
+			});
+		}
+	}
 }

@@ -14,22 +14,33 @@ import org.junit.runner.RunWith;
 import junit.framework.Assert;
 
 @Ignore
+@SuppressWarnings("deprecation")
 @RunWith(Ginkgo4jRunner.class)
 //@Ginkgo4jConfiguration(threads=1)
 public class ExampleTests {
 	
-	private Example example;
+	private  String something;
 
+	private Example example;
 	{
-		Describe("", () -> {
-			Context("", () -> {
-				It("", () -> {
+		Describe("describe", () -> {
+			Context("context", () -> {
+				something.length();
+				It("a test", () -> {
 					assertThat(true, is(true));
 				});
 			});
-		}); 		
-		
-		Describe("A describe", () -> {
+		});
+
+        Describe("", () -> {
+            Context("", () -> {
+                It("", () -> {
+                    assertThat(true, is(true));
+                });
+            });
+        });
+
+        Describe("A describe", () -> {
 			
 			BeforeEach(() -> {
 				example = new Example();

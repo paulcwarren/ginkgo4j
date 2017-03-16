@@ -7,16 +7,24 @@ import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.FContext;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.FDescribe;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.FIt;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.It;
+import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.JustBeforeEach;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
 import org.junit.runner.RunWith;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
+import org.mockito.ArgumentCaptor;
 
 import impl.com.github.paulcwarren.ginkgo4j.Spec;
 import impl.com.github.paulcwarren.ginkgo4j.chains.ExecutableChain;
@@ -30,8 +38,127 @@ import impl.com.github.paulcwarren.ginkgo4j.runner.SpecSkipper;
 public class Ginkgo4jRunnerTests {
 
 	private Ginkgo4jRunner runner;
+	private Throwable t;
+	
+	//mocks
+	private RunNotifier notifier;
+	
 	List<Spec> specs;
 	{
+		Describe("#run", () -> {
+			JustBeforeEach(() -> {
+				runner.run(notifier);
+			});
+			BeforeEach(() -> {
+				notifier = mock(RunNotifier.class);
+			});
+			Context("when called with a passing test", () -> {
+				BeforeEach(() -> {
+					runner = new Ginkgo4jRunner(TestClass.class);
+				});
+				It("should execute sucessfully", () -> {
+					assertThat(t, is(nullValue()));
+					verify(notifier, times(4)).fireTestStarted(anyObject());
+					verify(notifier, times(4)).fireTestFinished(anyObject());
+				});
+			});
+			Context("when called with a test whose Describe block throws an NPE", () -> {
+				BeforeEach(() -> {
+					NPEThrowingTestClass.describe = null;
+					NPEThrowingTestClass.context = "";
+					NPEThrowingTestClass.jbe = "";
+					NPEThrowingTestClass.be = "";
+					NPEThrowingTestClass.ae = "";
+					runner = new Ginkgo4jRunner(NPEThrowingTestClass.class);
+				});
+				It("should report failure to junit's notifier", () -> {
+					verify(notifier, times(1)).fireTestStarted(anyObject());
+					
+					ArgumentCaptor<Failure> failureCaptor = ArgumentCaptor.forClass(Failure.class);
+					verify(notifier, times(1)).fireTestFailure(failureCaptor.capture());
+					assertThat(failureCaptor.getValue().getException().getStackTrace()[0].getLineNumber(), is(18));
+					
+					verify(notifier, times(1)).fireTestFinished(anyObject());
+				});
+			});
+			Context("when called with a test whose BeforeEach block throws an NPE", () -> {
+				BeforeEach(() -> {
+					NPEThrowingTestClass.describe = "";
+					NPEThrowingTestClass.context = "";
+					NPEThrowingTestClass.jbe = "";
+					NPEThrowingTestClass.be = null;
+					NPEThrowingTestClass.ae = "";
+					runner = new Ginkgo4jRunner(NPEThrowingTestClass.class);
+				});
+				It("should report failure to junit's notifier", () -> {
+					verify(notifier, times(2)).fireTestStarted(anyObject());
+					
+					ArgumentCaptor<Failure> failureCaptor = ArgumentCaptor.forClass(Failure.class);
+					verify(notifier, times(1)).fireTestFailure(failureCaptor.capture());
+					assertThat(failureCaptor.getValue().getException().getStackTrace()[0].getLineNumber(), is(20));
+					
+					verify(notifier, times(2)).fireTestFinished(anyObject());
+				});
+			});
+			Context("when called with a test whose JustBeforeEach block throws an NPE", () -> {
+				BeforeEach(() -> {
+					NPEThrowingTestClass.describe = "";
+					NPEThrowingTestClass.context = "";
+					NPEThrowingTestClass.jbe = null;
+					NPEThrowingTestClass.be = "";
+					NPEThrowingTestClass.ae = "";
+					runner = new Ginkgo4jRunner(NPEThrowingTestClass.class);
+				});
+				It("should report failure to junit's notifier", () -> {
+					verify(notifier, times(2)).fireTestStarted(anyObject());
+					
+					ArgumentCaptor<Failure> failureCaptor = ArgumentCaptor.forClass(Failure.class);
+					verify(notifier, times(1)).fireTestFailure(failureCaptor.capture());
+					assertThat(failureCaptor.getValue().getException().getStackTrace()[0].getLineNumber(), is(23));
+					
+					verify(notifier, times(2)).fireTestFinished(anyObject());
+				});
+			});
+			Context("when called with a test whose Context block throws an NPE", () -> {
+				BeforeEach(() -> {
+					NPEThrowingTestClass.describe = "";
+					NPEThrowingTestClass.context = null;
+					NPEThrowingTestClass.jbe = "";
+					NPEThrowingTestClass.be = "";
+					NPEThrowingTestClass.ae = "";
+					runner = new Ginkgo4jRunner(NPEThrowingTestClass.class);
+				});
+				It("should report failure to junit's notifier", () -> {
+					verify(notifier, times(1)).fireTestStarted(anyObject());
+					
+					ArgumentCaptor<Failure> failureCaptor = ArgumentCaptor.forClass(Failure.class);
+					verify(notifier, times(1)).fireTestFailure(failureCaptor.capture());
+					assertThat(failureCaptor.getValue().getException().getStackTrace()[0].getLineNumber(), is(26));
+					
+					verify(notifier, times(1)).fireTestFinished(anyObject());
+				});
+			});
+			Context("when called with a test whose AfterEach block throws an NPE", () -> {
+				BeforeEach(() -> {
+					NPEThrowingTestClass.describe = "";
+					NPEThrowingTestClass.context = "";
+					NPEThrowingTestClass.jbe = "";
+					NPEThrowingTestClass.be = "";
+					NPEThrowingTestClass.ae = null;
+					runner = new Ginkgo4jRunner(NPEThrowingTestClass.class);
+				});
+				It("should report failure to junit's notifier", () -> {
+					verify(notifier, times(2)).fireTestStarted(anyObject());
+					
+					ArgumentCaptor<Failure> failureCaptor = ArgumentCaptor.forClass(Failure.class);
+					verify(notifier, times(1)).fireTestFailure(failureCaptor.capture());
+					assertThat(failureCaptor.getValue().getException().getStackTrace()[0].getLineNumber(), is(30));
+					
+					verify(notifier, times(2)).fireTestFinished(anyObject());
+				});
+			});
+		});
+
 		Describe("#calculateExecutionChains", () -> {
 			Context("when called with no focussed specs", () -> {
 				BeforeEach(() -> {
