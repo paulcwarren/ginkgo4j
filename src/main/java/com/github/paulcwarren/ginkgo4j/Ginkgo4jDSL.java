@@ -24,7 +24,7 @@ public class Ginkgo4jDSL {
 		if (stack.peek() != null) {
 			try {
 				stack.peek().describe(text, block, false);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException)e;
 				}
@@ -66,7 +66,7 @@ public class Ginkgo4jDSL {
 		if (stack.peek() != null) {
 			try {
 				stack.peek().context(text, block, true);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException)e;
 				}
@@ -80,7 +80,7 @@ public class Ginkgo4jDSL {
 		if (stack.peek() != null) {
 			try {
 				stack.peek().beforeEach(block);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException)e;
 				}
@@ -94,7 +94,7 @@ public class Ginkgo4jDSL {
 		if (stack.peek() != null) {
 			try {
 				stack.peek().justBeforeEach(block);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException)e;
 				}
@@ -106,14 +106,24 @@ public class Ginkgo4jDSL {
 	public static void It(String text, ExecutableBlock block) {
 		assertVisitor("It");
 		if (stack.peek() != null) {
-			stack.peek().it(text, block, false);
+			try {
+				stack.peek().it(text, block, false);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public static void FIt(String text, ExecutableBlock block) {
 		assertVisitor("FIt");
 		if (stack.peek() != null) {
-			stack.peek().it(text, block, true);
+			try {
+				stack.peek().it(text, block, true);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -122,7 +132,7 @@ public class Ginkgo4jDSL {
 		if (stack.peek() != null) {
 			try {
 				stack.peek().afterEach(block);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException)e;
 				}

@@ -19,7 +19,7 @@ public class SpecsCollector implements TestVisitor {
 		return specs;
 	}
 	
-	public void describe(String text, ExecutableBlock block, boolean isFocused) throws Exception {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) throws Throwable {
 		text = IdBuilder.id(text);
 		
 		context.push(text);
@@ -30,7 +30,7 @@ public class SpecsCollector implements TestVisitor {
 		}
 	}
 	
-	public void context(String text, ExecutableBlock block, boolean isFocused) throws Exception {
+	public void context(String text, ExecutableBlock block, boolean isFocused) throws Throwable {
 		text = IdBuilder.id(text);
 		
 		context.push(text);
@@ -41,10 +41,10 @@ public class SpecsCollector implements TestVisitor {
 		}
 	}
 	
-	public void beforeEach(ExecutableBlock block) throws Exception {
+	public void beforeEach(ExecutableBlock block) throws Throwable {
 	}
 
-	public void justBeforeEach(ExecutableBlock block) throws Exception {
+	public void justBeforeEach(ExecutableBlock block) throws Throwable {
 	}
 
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
@@ -54,7 +54,7 @@ public class SpecsCollector implements TestVisitor {
 		specs.add(spec);
 	}
 	
-	public void afterEach(ExecutableBlock block) throws Exception {
+	public void afterEach(ExecutableBlock block) throws Throwable {
 	}
 
 	@Override

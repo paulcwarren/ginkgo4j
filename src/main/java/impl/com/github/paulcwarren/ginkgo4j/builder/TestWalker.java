@@ -53,42 +53,42 @@ public class TestWalker implements TestVisitor {
 	}
 
 	@Override
-	public void describe(String text, ExecutableBlock block, boolean isFocused) throws Exception {
+	public void describe(String text, ExecutableBlock block, boolean isFocused) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.describe(text, block, isFocused);
 		}
 	}
 
 	@Override
-	public void context(String text, ExecutableBlock block, boolean isFocused) throws Exception {
+	public void context(String text, ExecutableBlock block, boolean isFocused) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.context(text, block, isFocused);
 		}
 	}
 
 	@Override
-	public void beforeEach(ExecutableBlock block) throws Exception {
+	public void beforeEach(ExecutableBlock block) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.beforeEach(block);
 		}
 	}
 
 	@Override
-	public void justBeforeEach(ExecutableBlock block) throws Exception {
+	public void justBeforeEach(ExecutableBlock block) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.justBeforeEach(block);
 		}
 	}
 
 	@Override
-	public void it(String text, ExecutableBlock block, boolean isFocused) {
+	public void it(String text, ExecutableBlock block, boolean isFocused) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.it(text, block, isFocused);
 		}
 	}
 
 	@Override
-	public void afterEach(ExecutableBlock block) throws Exception {
+	public void afterEach(ExecutableBlock block) throws Throwable {
 		for (TestVisitor visitor : visitors) {
 			visitor.afterEach(block);
 		}
