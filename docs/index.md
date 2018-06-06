@@ -15,12 +15,12 @@ Add the ginkgo4j to your project as a test dependency.  For a maven project add:
 <dependency>
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.9</version>
 </dependency>
 ```
 or for a Gradle project add:-
 
-`compile 'com.github.paulcwarren:ginkgo4j:1.0.0'`
+`compile 'com.github.paulcwarren:ginkgo4j:1.0.9'`
 
 for other buold systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.0%7Cjar).
 
