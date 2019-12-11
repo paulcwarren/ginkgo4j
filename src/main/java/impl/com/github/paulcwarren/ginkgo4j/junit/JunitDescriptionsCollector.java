@@ -36,7 +36,7 @@ public class JunitDescriptionsCollector implements TestVisitor {
 		String id = IdBuilder.id(text);
 		String fqid = IdBuilder.fqid(text, idContext);
 		
-		Description desc = Description.createSuiteDescription(text, fqid, (Annotation[])null);
+		Description desc = Description.createSuiteDescription(text, fqid, new Annotation[]{});
 		descriptions.put(fqid, desc);
 		if (descContext.isEmpty()) {
 			description.addChild(desc);
@@ -61,7 +61,7 @@ public class JunitDescriptionsCollector implements TestVisitor {
 		String id = IdBuilder.id(text);
 		String fqid = IdBuilder.fqid(text, idContext);
 	
-		Description childDesc = Description.createSuiteDescription(text, fqid, (Annotation[])null); 
+		Description childDesc = Description.createSuiteDescription(text, fqid, new Annotation[]{});
 		descriptions.put(fqid, childDesc);
 		if (descContext.isEmpty()) {
 			description.addChild(childDesc);

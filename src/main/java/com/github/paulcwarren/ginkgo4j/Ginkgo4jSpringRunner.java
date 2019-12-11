@@ -32,7 +32,7 @@ public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 	@Override
 	public Description getDescription() {
 		if (description == null) {
-			description = Description.createSuiteDescription(testClass.getName(), (Annotation[])null);
+			description = Description.createSuiteDescription(testClass.getName(), new Annotation[]{});
 
 			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
 			new TestWalker(testClass).walk(descCollector);

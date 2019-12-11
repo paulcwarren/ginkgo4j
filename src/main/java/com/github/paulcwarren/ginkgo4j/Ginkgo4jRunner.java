@@ -38,7 +38,7 @@ public class Ginkgo4jRunner extends Runner {
 	@Override
 	public Description getDescription() {
 		if (description == null) {
-			description = Description.createSuiteDescription(testClass.getName(), (Annotation[])null);
+			description = Description.createSuiteDescription(testClass.getName(), new Annotation[]{});
 
 			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
 			// collect as many descriptions as we can
