@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.paulcwarren</groupId>
 	<artifactId>ginkgo4j</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.11-SNAPSHOT</version>
 
 	<name>Ginkgo 4 Java</name>
 	<url>https://github.com/paulcwarren/ginkgo4j</url>
