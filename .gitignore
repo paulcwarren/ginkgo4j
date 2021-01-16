@@ -2,3 +2,6 @@
 *.iml
 *.versionsBackup
 target/
+.project
+.classpath
+.settings/
