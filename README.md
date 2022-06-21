@@ -2,7 +2,7 @@
 ## A Java BDD Testing Framework  (based on RSpec and [ginkgo](http://onsi.github.io/ginkgo/))
 [![Build Status](https://travis-ci.org/paulcwarren/ginkgo4j.svg?branch=master)](https://travis-ci.org/paulcwarren/ginkgo4j)
 
-Jump to the the [docs](https://paulcwarren.github.com/ginkgo4j) to see more.
+Jump to the [docs](https://paulcwarren.github.io/ginkgo4j) to see more.
 
 Feature List:-
 - Structure your BDD-style tests expressively:
@@ -20,33 +20,44 @@ Feature List:-
 - Java 8
 
 ## Getting Started
-- Add the ginkgo4j to your project as a test dependency.  For a maven project add:-
+- Add the ginkgo4j to your project as a test dependency.  For a maven project add:
 
 ```
 <dependency>
     <groupId>com.github.paulcwarren</groupId>
     <artifactId>ginkgo4j</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.14</version>
     <scope>test</scope>
 </dependency>
 ```
-or for a Gradle project add:-
-`compile 'com.github.paulcwarren:ginkgo4j:1.0.7'`
+or for a Gradle project add:
+```
+compile 'com.github.paulcwarren:ginkgo4j:1.0.14'
+```
+
+or for a Gradle 7 project add:
+```
+dependencies {
+    testImplementation 'com.github.paulcwarren:ginkgo4j:1.0.14'
+}
+```
 
 for other build systems see [here](http://search.maven.org/#artifactdetails%7Ccom.github.paulcwarren%7Cginkgo4j%7C1.0.7%7Cjar).
 
 - Create a junit test class
-  - Add the following imports:-
-```
+  - Add the following imports:
+```java
+import org.junit.runner.RunWith;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
+import com.github.paulcwarren.ginkgo4j.Ginkgo4jConfiguration;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 ```
   - Annotate your test class with:-
-```
+```java
 @RunWith(Ginkgo4jRunner.class)
 ```
-  - And the following template:-
-```
+  - And the following template:
+```java
 	{
 		Describe("Replace me", () -> {
 			It("Replace me too", () -> {
@@ -59,16 +70,17 @@ import com.github.paulcwarren.ginkgo4j.Ginkgo4jRunner;
 
 ### Getting Started with Spring
    - Add the following imports:-
-```
+```java
+import org.junit.runner.RunWith;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 ```
    - Annotate your test class with:-
-```
+```java
 @RunWith(Ginkgo4jSpringRunner.class)
 ```
-   - Add the following template:-
-```
+   - Add the following template:
+```java
 	{
 		Describe("Replace me", () -> {
 			It("Replace me too", () -> {
