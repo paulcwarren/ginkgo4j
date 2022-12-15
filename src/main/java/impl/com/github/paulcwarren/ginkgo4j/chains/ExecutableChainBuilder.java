@@ -1,5 +1,6 @@
 package impl.com.github.paulcwarren.ginkgo4j.chains;
 
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
@@ -13,12 +14,16 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	private String filter;
 	private ExecutableChain chain;
-	
+
+	private Stack<ExecutableBlock> blocks = new Stack<>();
+
+	private int level = 0;
+
 	public ExecutableChainBuilder(String specId) {
 		this.filter = specId;
 		this.chain = new ExecutableChain(specId);
 	}
-	
+
 	public ExecutableChain getExecutableChain() {
 		return chain;
 	}
@@ -32,10 +37,14 @@ public class ExecutableChainBuilder implements TestVisitor {
 			chain.setIsFocused(isFocused);
 			try {
 				chain.getContext().add(new Describe(text));
+
+				level++;
 				block.invoke();
 			} catch (Throwable e) {
 				e.printStackTrace();
-			} 
+			} finally {
+				level--;
+			}
 		}
 	}
 
@@ -48,21 +57,31 @@ public class ExecutableChainBuilder implements TestVisitor {
 			chain.setIsFocused(isFocused |= chain.isFocused());
 			try {
 				chain.getContext().add(new Context(text));
+				level++;
 				block.invoke();
 			} catch (Throwable e) {
 				e.printStackTrace();
+			} finally {
+				level--;
 			}
 		}
 	}
 
 	@Override
 	public void beforeEach(ExecutableBlock block) {
-		chain.getContext().get(chain.getContext().size() - 1).setBeforeEach(block);
+
+		if (chain.getContext().size() < level) {
+			for (int i=chain.getContext().size(); i<level; i++) {
+				this.chain.getContext().add(new Context("anonymous"));
+			}
+		}
+
+		chain.getContext().get(level-1).addBeforeEach(block);
 	}
 
 	@Override
 	public void justBeforeEach(ExecutableBlock block) {
-		chain.getContext().get(chain.getContext().size() - 1).setJustBeforeEach(block);
+		chain.getContext().get(level - 1).setJustBeforeEach(block);
 	}
 
 	@Override
@@ -82,7 +101,7 @@ public class ExecutableChainBuilder implements TestVisitor {
 
 	@Override
 	public void afterEach(ExecutableBlock block) {
-		chain.getContext().get(chain.getContext().size() - 1).setAfterEach(block);
+		chain.getContext().get(level - 1).setAfterEach(block);
 	}
 
 	private String splitFilter(String filter, String text) {
@@ -97,5 +116,4 @@ public class ExecutableChainBuilder implements TestVisitor {
 	public void test(Object test) {
 		chain.setTestObject(test);
 	}
-
 }

@@ -262,7 +262,7 @@ public class SpecRunnerTests {
 					chain.getContext().get(0).setJustBeforeEach(justBefore);
 
 					before = mock(ExecutableBlock.class);
-					chain.getContext().get(1).setBeforeEach(before);
+					chain.getContext().get(1).addBeforeEach(before);
 
 					it = mock(ExecutableBlock.class);
 					chain.setSpec(it);
@@ -285,7 +285,7 @@ public class SpecRunnerTests {
 		chain.getContext().add(new Context(""));
 		
 		before = mock(ExecutableBlock.class);
-		chain.getContext().get(0).setBeforeEach(before);
+		chain.getContext().get(0).addBeforeEach(before);
 
 		it = mock(ExecutableBlock.class);
 		chain.setSpec(it);
