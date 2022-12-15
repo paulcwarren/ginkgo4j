@@ -2,13 +2,16 @@ package impl.com.github.paulcwarren.ginkgo4j;
 
 import com.github.paulcwarren.ginkgo4j.ExecutableBlock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Context {
 	
 	private String id;
 	
-	private ExecutableBlock be;
-	private ExecutableBlock jbe;
-	private ExecutableBlock a;
+	private List<ExecutableBlock> be = new ArrayList<>();
+	private List<ExecutableBlock> jbe = new ArrayList<>();
+	private List<ExecutableBlock> ae = new ArrayList<>();
 	
 	public Context(String id) {
 		this.id = id;
@@ -18,28 +21,28 @@ public class Context {
 		return this.id;
 	}
 	
-	public void setBeforeEach(ExecutableBlock be) {
-		this.be = be;
+	public void addBeforeEach(ExecutableBlock be) {
+		this.be.add(be);
 	}
 
-	public ExecutableBlock getBeforeEach() {
+	public List<ExecutableBlock> getBeforeEach() {
 		return this.be;
 	}
 
 	public void setJustBeforeEach(ExecutableBlock jbe) {
-		this.jbe = jbe;
+		this.jbe.add(jbe);
 	}
 
-	public ExecutableBlock getJustBeforeEach() {
+	public List<ExecutableBlock> getJustBeforeEach() {
 		return this.jbe;
 	}
 
 	public void setAfterEach(ExecutableBlock a) {
-		this.a = a;
+		this.ae.add(a);
 	}
 
-	public ExecutableBlock getAfterEach() {
-		return this.a;
+	public List<ExecutableBlock> getAfterEach() {
+		return this.ae;
 	}
 }
 

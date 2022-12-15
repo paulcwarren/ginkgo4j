@@ -58,11 +58,20 @@ public class ExecutableChain {
 		for (Context c : context) {
 			try {
 				if (c.getBeforeEach() != null) {
-					c.getBeforeEach().invoke();
+					for (ExecutableBlock block : c.getBeforeEach()) {
+						if (block != null) {
+							block.invoke();
+						}
+					}
 				}
 			} catch (Throwable t) {
+				t.printStackTrace();
 				if (c.getAfterEach() != null) {
-					c.getAfterEach().invoke();
+					for (ExecutableBlock block : c.getAfterEach()) {
+						if (block != null) {
+							block.invoke();
+						}
+					}
 				}
 				throw t;
 			}
@@ -71,11 +80,19 @@ public class ExecutableChain {
 		for (Context c : context) {
 			try {
 				if (c.getJustBeforeEach() != null) {
-					c.getJustBeforeEach().invoke();
+					for (ExecutableBlock block : c.getJustBeforeEach()) {
+						if (block != null) {
+							block.invoke();
+						}
+					}
 				}
 			} catch (Throwable t) {
 				if (c.getAfterEach() != null) {
-					c.getAfterEach().invoke();
+					for (ExecutableBlock block : c.getAfterEach()) {
+						if (block != null) {
+							block.invoke();
+						}
+					}
 				}
 				throw t;
 			}
@@ -85,9 +102,10 @@ public class ExecutableChain {
 			this.getSpec().invoke();
 		} finally {
 			for (int i = context.size() - 1; i >= 0; i--) {
-				ExecutableBlock block = context.get(i).getAfterEach();
-				if (block != null) {
-					block.invoke();
+				for (ExecutableBlock block : context.get(i).getAfterEach()) {
+					if (block != null) {
+						block.invoke();
+					}
 				}
 			}
 		}
