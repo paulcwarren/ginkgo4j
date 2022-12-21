@@ -1,5 +1,6 @@
 package impl.com.github.paulcwarren.ginkgo4j.junit;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -15,13 +16,15 @@ import impl.com.github.paulcwarren.ginkgo4j.TitleBuilder;
 import impl.com.github.paulcwarren.ginkgo4j.builder.TestVisitor;
 
 public class JunitDescriptionsCollector implements TestVisitor {
-	
+
 	private Map<String, Description> descriptions = new HashMap<>();
 	private Stack<Description> descContext = new Stack<>();
 	private Stack<String> idContext = new Stack<>();
 	private Description description;
-	
-	public JunitDescriptionsCollector(Description description) {
+	private final Class<?> clazz;
+
+	public JunitDescriptionsCollector(Class<?> clazz, Description description) {
+		this.clazz = clazz;
 		this.description = description;
 	}
 
@@ -30,51 +33,25 @@ public class JunitDescriptionsCollector implements TestVisitor {
 	}
 	
 	public void describe(String text, ExecutableBlock block, boolean isFocused) {
-
 		text = TitleBuilder.title(text);
-
 		String id = IdBuilder.id(text);
-		String fqid = IdBuilder.fqid(text, idContext);
-		
-		Description desc = Description.createSuiteDescription(text, fqid, new Annotation[]{});
-		descriptions.put(fqid, desc);
-		if (descContext.isEmpty()) {
-			description.addChild(desc);
-		} else  {
-			safePeek(desc);
-		}
-		descContext.push(desc);
 		idContext.push(id);
 		try {
 			block.invoke();
 		} catch (Throwable e) {}
 		finally {
-			descContext.pop();
 			idContext.pop();
 		}
 	}
 	
 	public void context(String text, ExecutableBlock block, boolean isFocused) {
-
 		text = TitleBuilder.title(text);
-
 		String id = IdBuilder.id(text);
-		String fqid = IdBuilder.fqid(text, idContext);
-	
-		Description childDesc = Description.createSuiteDescription(text, fqid, new Annotation[]{});
-		descriptions.put(fqid, childDesc);
-		if (descContext.isEmpty()) {
-			description.addChild(childDesc);
-		} else  {
-			safePeek(childDesc);
-		}
-		descContext.push(childDesc);
 		idContext.push(id);
 		try {
 			block.invoke();
 		} catch (Throwable e) {}
 		finally {
-			descContext.pop();
 			idContext.pop();
 		}
 	}
@@ -86,16 +63,11 @@ public class JunitDescriptionsCollector implements TestVisitor {
 	}
 
 	public void it(String text, ExecutableBlock block, boolean isFocused) {
-
 		text = TitleBuilder.title(text);
-
 		String id = IdBuilder.fqid(text, idContext);
-	
-		Description itDesc = Description.createTestDescription("It", text, id);
+		Description itDesc = Description.createTestDescription(this.clazz.getName(), id, id);
+		description.addChild(itDesc);
 		descriptions.put(id, itDesc);
-		try {
-			safePeek(itDesc);
-		} catch (EmptyStackException ese) {}
 	}
 	
 	public void afterEach(ExecutableBlock block) {
@@ -111,4 +83,3 @@ public class JunitDescriptionsCollector implements TestVisitor {
 	public void test(Object test) {
 	}
 }
-

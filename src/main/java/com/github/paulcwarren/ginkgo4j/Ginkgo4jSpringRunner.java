@@ -34,7 +34,7 @@ public class Ginkgo4jSpringRunner extends SpringJUnit4ClassRunner {
 		if (description == null) {
 			description = Description.createSuiteDescription(testClass.getName(), new Annotation[]{});
 
-			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
+			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(testClass, description);
 			new TestWalker(testClass).walk(descCollector);
 			descriptions = descCollector.getDescriptions();
 		}
