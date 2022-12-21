@@ -40,7 +40,7 @@ public class Ginkgo4jRunner extends Runner {
 		if (description == null) {
 			description = Description.createSuiteDescription(testClass.getName(), new Annotation[]{});
 
-			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(description);
+			JunitDescriptionsCollector descCollector = new JunitDescriptionsCollector(testClass, description);
 			// collect as many descriptions as we can
 			try {
 				new TestWalker(testClass).walk(descCollector);
@@ -58,20 +58,12 @@ public class Ginkgo4jRunner extends Runner {
 		// to ensure setup happens
 		this.getDescription();
 		
-		try {
-			notifier.fireTestStarted(description);
-	
-			List<ExecutableChain> chains = calculateExecutionChains(testClass);
-	
-			RunnerListener listener = new JunitRunnerListener(notifier, descriptions);
-			List<Runnable> runners = calculateWorkerThreads(chains, listener);
-	
-			threadExecute(runners, getThreads(testClass));
-		} catch (Exception e) {
-			notifier.fireTestFailure(new Failure(description, e));
-		} finally {
-			notifier.fireTestFinished(description);
-		}
+		List<ExecutableChain> chains = calculateExecutionChains(testClass);
+
+		RunnerListener listener = new JunitRunnerListener(notifier, descriptions);
+		List<Runnable> runners = calculateWorkerThreads(chains, listener);
+
+		threadExecute(runners, getThreads(testClass));
    	}
 
 	static List<ExecutableChain> calculateExecutionChains(Class<?> testClass) {

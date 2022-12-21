@@ -9,10 +9,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Ginkgo4jRunner.class)
 @Ginkgo4jConfiguration(threads = 1)
 public class ExecutableChainBuilderITests {
+
+	private static String str = null;
 
 	{
 		Describe("single context with multiple, unordered be's, jbe's and ae's", ()->{

@@ -36,87 +36,60 @@ public class JunitDescriptionsCollectorTests {
 			Context("given a test class with a conventional Describe->Context->It structure", () -> {
 				BeforeEach(() -> {
 					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
-					collector = new JunitDescriptionsCollector(description);
+					collector = new JunitDescriptionsCollector(TestClass.class, description);
 					walker = new TestWalker(TestClass.class);
 				});
 				It("should collect all descriptions into a tree structure under the root description", () -> {
 					assertThat(description.getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
-					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class.A context.should do something(impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollectorTests$TestClass)"));
 				});
 				It("should collect all descriptions into a quick access map", () -> {
 					assertThat(collector.getDescriptions(), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
 					assertThat(collector.getDescriptions().get("Test Class.A context.should do something"), is(not(nullValue())));
 				});
 			});
 			Context("given a test class with a top-level Context", () -> {
 				BeforeEach(() -> {
 					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
-					collector = new JunitDescriptionsCollector(description);
+					collector = new JunitDescriptionsCollector(TestClass.class, description);
 					walker = new TestWalker(TestClass.class);
 				});
 				It("should collect all descriptions into a tree structure under the root description", () -> {
 					assertThat(description.getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
-					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class.A context.should do something(impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollectorTests$TestClass)"));
 				});
 				It("should collect all descriptions into a quick access map", () -> {
 					assertThat(collector.getDescriptions(), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
 					assertThat(collector.getDescriptions().get("Test Class.A context.should do something"), is(not(nullValue())));
 				});
 			});
 			Context("given a test class with a nested Describe", () -> {
 				BeforeEach(() -> {
 					description = Description.createSuiteDescription(TestClass.class.getName(), (Annotation[])null);
-					collector = new JunitDescriptionsCollector(description);
+					collector = new JunitDescriptionsCollector(TestClass.class, description);
 					walker = new TestWalker(NestedDescribeTestClass.class);
 				});
 				It("should collect all descriptions into a tree structure under the root description", () -> {
 					assertThat(description.getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class"));
-					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is("A context"));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("A nested describe"));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is("should do something(It)"));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("Test Class.A context.A nested describe.should do something(impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollectorTests$TestClass)"));
 				});
 				It("should collect all descriptions into a quick access map", () -> {
 					assertThat(collector.getDescriptions(), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class"), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class.A context"), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("Test Class.A context.A nested describe"), is(not(nullValue())));
 					assertThat(collector.getDescriptions().get("Test Class.A context.A nested describe.should do something"), is(not(nullValue())));
 				});
 			});
 			Context("given a test class with empty labels", () -> {
 				BeforeEach(() -> {
 					description = Description.createSuiteDescription(EmptyLabelsTestClass.class.getName(), (Annotation[])null);
-					collector = new JunitDescriptionsCollector(description);
+					collector = new JunitDescriptionsCollector(EmptyLabelsTestClass.class, description);
 					walker = new TestWalker(EmptyLabelsTestClass.class);
 				});
 				It("should use spaces for the description display names", () -> {
 					assertThat(description.getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getDisplayName(), is(" "));
-					assertThat(description.getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), is(" "));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().size(), is(1));
-					assertThat(description.getChildren().get(0).getChildren().get(0).getChildren().get(0).getDisplayName(), is(" (It)"));
+					assertThat(description.getChildren().get(0).getDisplayName(), is("_EMPTY_._EMPTY_._EMPTY_(impl.com.github.paulcwarren.ginkgo4j.junit.JunitDescriptionsCollectorTests$EmptyLabelsTestClass)"));
 				});
 				It("should use a placeholder for the description fully-qualified IDs", () -> {
 					assertThat(collector.getDescriptions(), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("_EMPTY_"), is(not(nullValue())));
-					assertThat(collector.getDescriptions().get("_EMPTY_._EMPTY_"), is(not(nullValue())));
 					assertThat(collector.getDescriptions().get("_EMPTY_._EMPTY_._EMPTY_"), is(not(nullValue())));
 				});
 			});
